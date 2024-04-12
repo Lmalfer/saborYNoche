@@ -23,7 +23,6 @@ public class Usuario {
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
 
-
     public Long getId() {
         return id;
     }
@@ -32,7 +31,6 @@ public class Usuario {
         this.id = id;
     }
 
-    // Getter y Setter para el atributo 'nombreUsuario'
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -41,7 +39,6 @@ public class Usuario {
         this.nombreUsuario = nombreUsuario;
     }
 
-    // Getter y Setter para el atributo 'clave'
     public String getClave() {
         return clave;
     }
@@ -50,7 +47,22 @@ public class Usuario {
         this.clave = clave;
     }
 
-    // Getter y Setter para el atributo 'rol'
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public boolean isDenunciado() {
+        return denunciado;
+    }
+
+    public void setDenunciado(boolean denunciado) {
+        this.denunciado = denunciado;
+    }
+
     public Rol getRol() {
         return rol;
     }

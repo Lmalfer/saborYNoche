@@ -22,7 +22,6 @@ import jakarta.persistence.*;
 
         private boolean activo;
 
-
     }
 
 
