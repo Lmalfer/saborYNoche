@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 
-@Entity // Añadida la anotación @Entity
+@Entity
 @Table(name = "empresas")
 public class Empresa {
     @Id

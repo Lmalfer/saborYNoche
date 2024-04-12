@@ -16,6 +16,9 @@ public class Usuario {
 
     private String clave;
 
+    private boolean activo;
+
+    private boolean denunciado;
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
