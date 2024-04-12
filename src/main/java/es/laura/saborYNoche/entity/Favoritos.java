@@ -10,7 +10,7 @@ import jakarta.persistence.*;
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-        private int idFavorito;
+        private Long idFavorito;
 
         @ManyToOne
         @JoinColumn(name = "id_usuario", nullable = false)
@@ -22,11 +22,11 @@ import jakarta.persistence.*;
 
         private boolean activo;
 
-        public int getIdFavorito() {
+        public Long getIdFavorito() {
             return idFavorito;
         }
 
-        public void setIdFavorito(int idFavorito) {
+        public void setIdFavorito(Long idFavorito) {
             this.idFavorito = idFavorito;
         }
 

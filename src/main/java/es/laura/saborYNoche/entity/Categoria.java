@@ -2,13 +2,14 @@ package es.laura.saborYNoche.entity;
 
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.function.LongBinaryOperator;
 
 @Entity
 @Table(name = "categorias")
 public class Categoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String nombre;
     private String descripcion;
@@ -17,11 +18,11 @@ public class Categoria {
     @OneToMany(mappedBy = "categoria")
     private List<Empresa> empresas;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

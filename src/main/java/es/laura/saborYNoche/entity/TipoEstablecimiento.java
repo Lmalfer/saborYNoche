@@ -8,7 +8,7 @@ import java.util.List;
 public class TipoEstablecimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String nombre;
     private boolean activo;
@@ -27,11 +27,11 @@ public class TipoEstablecimiento {
     }
 
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

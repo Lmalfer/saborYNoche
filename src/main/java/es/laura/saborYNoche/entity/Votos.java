@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Votos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private int notaComida;
     private int notaServicio;
@@ -23,11 +23,11 @@ public class Votos {
     private Empresa empresa;
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

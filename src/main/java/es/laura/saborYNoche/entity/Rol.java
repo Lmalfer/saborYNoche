@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private boolean activo;
 
@@ -15,11 +15,11 @@ public class Rol {
     private String nombre;
 
     // Getter y Setter para el atributo 'id'
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

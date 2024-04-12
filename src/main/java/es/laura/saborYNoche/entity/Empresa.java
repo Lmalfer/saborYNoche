@@ -9,7 +9,7 @@ import java.util.List;
 public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String nombre;
     private String direccion;
@@ -35,11 +35,11 @@ public class Empresa {
     @OneToMany(mappedBy = "empresa")
     private List<Votos> votos;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

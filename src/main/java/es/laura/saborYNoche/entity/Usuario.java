@@ -9,7 +9,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(unique = true)
     private String nombreUsuario;
@@ -23,11 +23,11 @@ public class Usuario {
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
