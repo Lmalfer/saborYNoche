@@ -1,28 +1,37 @@
-package es.laura.saborYNoche.entity;
+package es.laura.saborYNoche.modelo;
 
 import jakarta.persistence.*;
 import java.util.List;
-import java.util.function.LongBinaryOperator;
 
-@Entity
-@Table(name = "categorias")
-public class Categoria {
+@Entity // Añadida la anotación @Entity
+@Table(name = "tipos_establecimiento") // Opcional: Especifica el nombre de la tabla en la base de datos
+public class TipoEstablecimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String nombre;
-    private String descripcion;
     private boolean activo;
 
-    @OneToMany(mappedBy = "categoria")
+    @OneToMany(mappedBy = "tipoEstablecimiento")
     private List<Empresa> empresas;
 
-    public Long getId() {
+    // Constructor por defecto
+    public TipoEstablecimiento() {
+    }
+
+    // Constructor con todos los campos
+    public TipoEstablecimiento(String nombre, boolean activo) {
+        this.nombre = nombre;
+        this.activo = activo;
+    }
+
+    // Getters y setters
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -32,14 +41,6 @@ public class Categoria {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
     }
 
     public boolean isActivo() {

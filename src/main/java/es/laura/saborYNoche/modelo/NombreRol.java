@@ -1,4 +1,4 @@
-package es.laura.saborYNoche.model;
+package es.laura.saborYNoche.modelo;
 
 
 public enum NombreRol {

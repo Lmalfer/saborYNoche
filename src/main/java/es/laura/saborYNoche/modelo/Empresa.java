@@ -1,4 +1,4 @@
-package es.laura.saborYNoche.entity;
+package es.laura.saborYNoche.modelo;
 
 import jakarta.persistence.*;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String nombre;
     private String direccion;
@@ -35,11 +35,11 @@ public class Empresa {
     @OneToMany(mappedBy = "empresa")
     private List<Votos> votos;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

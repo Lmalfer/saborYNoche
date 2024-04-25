@@ -1,4 +1,4 @@
-package es.laura.saborYNoche.entity;
+package es.laura.saborYNoche.modelo;
 
 import jakarta.persistence.*;
 
@@ -10,7 +10,7 @@ import jakarta.persistence.*;
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-        private Long idFavorito;
+        private Integer id;
 
         @ManyToOne
         @JoinColumn(name = "id_usuario", nullable = false)
@@ -22,12 +22,12 @@ import jakarta.persistence.*;
 
         private boolean activo;
 
-        public Long getIdFavorito() {
-            return idFavorito;
+        public Integer getId() {
+            return id;
         }
 
-        public void setIdFavorito(Long idFavorito) {
-            this.idFavorito = idFavorito;
+        public void setId(Integer id) {
+            this.id = id;
         }
 
         public Usuario getUsuario() {
