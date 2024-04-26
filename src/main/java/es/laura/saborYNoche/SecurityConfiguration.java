@@ -16,16 +16,17 @@ public class SecurityConfiguration {
 
         http
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/css/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())
                 .formLogin(form -> form
                         .loginPage("/loggin")
-                .loginProcessingUrl("/logginprocess")
-                                .permitAll()
+                        .loginProcessingUrl("/logginprocess")
+                        .permitAll()
                 );
-        return http.build();
 
+        return http.build();
     }
 
 }
