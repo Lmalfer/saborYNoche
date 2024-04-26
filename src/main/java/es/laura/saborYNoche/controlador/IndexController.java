@@ -10,4 +10,10 @@ public class IndexController {
 
         return "index";
     }
+
+    @GetMapping(value= {"/loggin"})
+    public String loggin() {
+
+        return "loggin";
+    }
 }
