@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-
   private Integer id;
   private boolean activo;
   private boolean denunciado;
@@ -76,5 +76,16 @@ public class Usuario {
   @Override
   public int hashCode() {
     return Objects.hash(id, activo, denunciado, nombre, clave, email);
+  }
+
+  @Override
+  public String toString() {
+    return "Usuario{" +
+            "id=" + id +
+            ", activo=" + activo +
+            ", denunciado=" + denunciado +
+            ", nombre='" + nombre + '\'' +
+            ", email='" + email + '\'' +
+            '}';
   }
 }

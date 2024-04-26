@@ -1,75 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Tenedor</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Asegúrate de tener un archivo CSS llamado styles.css en la misma carpeta -->
+    <title>Sabor y Noche</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header>
-    <nav>
-        <ul>
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Explorar</a></li>
-            <li><a href="#">Iniciar sesión</a></li>
-        </ul>
-    </nav>
-</header>
-<main>
-    <section>
-        <h1>Encuentra los mejores restaurantes cerca de ti</h1>
-        <p>Descubre restaurantes y promociones exclusivas en tu área.</p>
-        <button>Explorar ahora</button>
-    </section>
-    <section>
-        <h2>Restaurantes populares</h2>
-        <!-- Aquí podrías agregar una lista de restaurantes populares -->
-    </section>
-    <section>
-        <h2>Ofertas destacadas</h2>
-        <!-- Aquí podrías agregar una lista de ofertas destacadas -->
-    </section>
-</main>
-<footer>
-    <p>&copy; 2024 Sabor y Noche. Todos los derechos reservados.</p>
-</footer>
-
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Iniciar sesión</h2>
-        <form>
-            <label for="username">Usuario:</label>
-            <input type="text" id="username" name="username" required><br><br>
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required><br><br>
-            <input type="submit" value="Iniciar sesión">
-        </form>
-    </div>
-</div>
-
-<script>
-    // Función para mostrar y ocultar el modal de inicio de sesión
-    var modal = document.getElementById("loginModal");
-    var closeButton = document.getElementsByClassName("close")[0];
-
-    // Mostrar el modal
-    function showModal() {
-        modal.style.display = "block";
-    }
-
-    // Ocultar el modal cuando se hace clic en el botón de cierre
-    closeButton.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    // Ocultar el modal cuando se hace clic fuera de él
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
+<h2>Bienvenido a Sabor y Noche</h2>
 </body>
 </html>
