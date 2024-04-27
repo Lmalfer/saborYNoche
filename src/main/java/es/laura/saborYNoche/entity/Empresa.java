@@ -1,4 +1,4 @@
-package es.laura.saborYNoche.modelo;
+package es.laura.saborYNoche.entity;
 
 import jakarta.persistence.*;
 import java.util.List;
