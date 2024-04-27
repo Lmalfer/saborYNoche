@@ -16,7 +16,7 @@ public class Votos {
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    private User usuario;
 
     @ManyToOne
     @JoinColumn(name = "id_empresa", nullable = false)
@@ -68,11 +68,11 @@ public class Votos {
     }
 
     // Getter y Setter para el atributo 'usuario'
-    public Usuario getUsuario() {
+    public User getUser() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUser(User usuario) {
         this.usuario = usuario;
     }
 

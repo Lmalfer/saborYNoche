@@ -14,7 +14,7 @@ import jakarta.persistence.*;
 
         @ManyToOne
         @JoinColumn(name = "id_usuario", nullable = false)
-        private Usuario usuario;
+        private User usuario;
 
         @ManyToOne
         @JoinColumn(name = "id_empresa", nullable = false)
@@ -30,11 +30,11 @@ import jakarta.persistence.*;
             this.id = id;
         }
 
-        public Usuario getUsuario() {
+        public User getUser() {
             return usuario;
         }
 
-        public void setUsuario(Usuario usuario) {
+        public void setUser(User usuario) {
             this.usuario = usuario;
         }
 

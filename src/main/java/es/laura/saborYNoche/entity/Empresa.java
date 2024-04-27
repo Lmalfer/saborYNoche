@@ -22,7 +22,7 @@ public class Empresa {
 
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    private User usuario;
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_establecimiento", nullable = false)
@@ -107,11 +107,11 @@ public class Empresa {
         this.activo = activo;
     }
 
-    public Usuario getUsuario() {
+    public User getUser() {
         return usuario;
     }
 
-    public void setUsuario(Usuario usuario) {
+    public void setUser(User usuario) {
         this.usuario = usuario;
     }
 
