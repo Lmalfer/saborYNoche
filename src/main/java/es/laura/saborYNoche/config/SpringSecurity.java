@@ -34,7 +34,7 @@ public class SpringSecurity {
                                 .requestMatchers("/users").hasRole("ADMIN")
                 ).formLogin(
                         form -> form
-                                .loginPage("/login")
+                                .loginPage("/index")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/users")
                                 .permitAll()
