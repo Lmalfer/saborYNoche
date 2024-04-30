@@ -1,0 +1,5 @@
+.btn:focus,
+.btn:active {
+    background-color: #007bff; /* Cambiar al color que desees */
+    color: #fff; /* Cambiar al color que desees */
+}
