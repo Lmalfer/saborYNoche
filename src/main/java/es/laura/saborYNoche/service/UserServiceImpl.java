@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
             this.passwordEncoder = passwordEncoder;
         }
 
+        // UserServiceImpl.java
         @Override
         public void saveUser(UserDto userDto) {
             User user = new User();
@@ -35,13 +36,16 @@ import java.util.stream.Collectors;
             // encrypt the password using spring security
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-            Role role = roleRepository.findByName("ROLE_ADMIN");
+            // Obtener el rol correspondiente (en este caso, ROLE_USER)
+            Role role = roleRepository.findByName("ROLE_USER");
             if(role == null){
                 role = checkRoleExist();
             }
-            user.setRoles(Arrays.asList(role));
+            // Asignar el rol al usuario
+            user.setRole(role);
             userRepository.save(user);
         }
+
 
         @Override
         public User findUserByEmail(String email) {
