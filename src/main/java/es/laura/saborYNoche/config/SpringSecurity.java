@@ -31,18 +31,15 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/index").permitAll() // Permitir acceso a estas URL sin autenticación
-// Permitir acceso a estas URL sin autenticación
-                                .requestMatchers("/users").hasAuthority("USER") // Requiere ROLE_USER para acceder a /users
-                )
-                .formLogin(
+                                .requestMatchers("/index").permitAll()
+                                .requestMatchers("/users").hasAuthority("ROLE_ADMIN") // Cambiar hasRole por hasAuthority
+                ).formLogin(
                         form -> form
                                 .loginPage("/index")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/users")
                                 .permitAll()
-                )
-                .logout(
+                ).logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll()
@@ -53,8 +50,7 @@ public class SpringSecurity {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userDetailsService) // Asegúrate de que estás utilizando tu servicio personalizado
                 .passwordEncoder(passwordEncoder());
     }
 }
-
