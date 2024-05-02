@@ -57,11 +57,11 @@ public class AuthController {
 
         if(result.hasErrors()){
             model.addAttribute("user", userDto);
-            return "/register";
+            return "register"; // Corregido: No es necesario incluir una barra inicial en el nombre de la vista
         }
 
         userService.saveUser(userDto);
-        return "redirect:/register?success";
+        return "redirect:/register?success"; // Corregido: Redirigir a una URL permitida sin autenticación
     }
 
     // handler method to handle list of users
