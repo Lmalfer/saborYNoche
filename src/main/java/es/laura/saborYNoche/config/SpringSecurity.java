@@ -30,8 +30,10 @@ public class SpringSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/register/**", "/index", "/login").permitAll() // Permitir acceso a estas URL sin autenticación
-                                .requestMatchers("/users").hasAuthority("ROLE_USER") // Requiere ROLE_USER para acceder a /users
+                                .requestMatchers("/register/**").permitAll()
+                                .requestMatchers("/index").permitAll() // Permitir acceso a estas URL sin autenticación
+// Permitir acceso a estas URL sin autenticación
+                                .requestMatchers("/users").hasAuthority("USER") // Requiere ROLE_USER para acceder a /users
                 )
                 .formLogin(
                         form -> form
