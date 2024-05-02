@@ -30,17 +30,17 @@ public class SpringSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users").hasAuthority("ROLE_USER")
-
-                ).formLogin(
+                                .requestMatchers("/register/**", "/index", "/login").permitAll() // Permitir acceso a estas URL sin autenticación
+                                .requestMatchers("/users").hasAuthority("ROLE_USER") // Requiere ROLE_USER para acceder a /users
+                )
+                .formLogin(
                         form -> form
                                 .loginPage("/index")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/users")
                                 .permitAll()
-                ).logout(
+                )
+                .logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll()
@@ -51,7 +51,8 @@ public class SpringSecurity {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(userDetailsService) // Asegúrate de que estás utilizando tu servicio personalizado
+                .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
 }
+
