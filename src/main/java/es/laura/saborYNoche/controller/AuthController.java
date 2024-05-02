@@ -61,7 +61,7 @@ public class AuthController {
         }
 
         userService.saveUser(userDto);
-        return "redirect:/register?success"; // Corregido: Redirigir a una URL permitida sin autenticación
+        return "redirect:/index"; // Corregido: Redirigir a una URL permitida sin autenticación
     }
 
     // handler method to handle list of users
