@@ -33,18 +33,21 @@ import java.util.stream.Collectors;
             User user = new User();
             user.setName(userDto.getFirstName() + " " + userDto.getLastName());
             user.setEmail(userDto.getEmail());
-            // encrypt the password using spring security
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
             // Obtener el rol correspondiente (en este caso, ROLE_USER)
             Role role = roleRepository.findByName("ROLE_USER");
-            if(role == null){
-                role = checkRoleExist();
+            if (role == null) {
+                // Si no se encuentra el rol, puedes crearlo y guardarlo
+                role = new Role("ROLE_USER");
+                roleRepository.save(role);
             }
             // Asignar el rol al usuario
             user.setRole(role);
+
             userRepository.save(user);
         }
+
 
 
         @Override
