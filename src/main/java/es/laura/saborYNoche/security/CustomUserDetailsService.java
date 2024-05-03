@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -32,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             if (user.getRole() != null) {
                 authorities = mapRolesToAuthorities(user.getRole());
             } else {
-                authorities = Collections.emptyList(); // Otra opción es lanzar una excepción aquí si prefieres manejarla como un error.
+                authorities = Collections.emptyList();
             }
             return new org.springframework.security.core.userdetails.User(user.getEmail(),
                     user.getPassword(),
