@@ -4,6 +4,8 @@ import es.laura.saborYNoche.dto.UserDto;
 import es.laura.saborYNoche.entity.User;
 import es.laura.saborYNoche.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,9 +32,14 @@ public class AuthController {
 
     // handler method to handle login request
     @GetMapping("/login")
-    public String login(){
+    public String login(Model model){
+        // Obtener el nombre del usuario autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        model.addAttribute("username", username);
         return "login";
     }
+
 
     // handler method to handle user registration form request
     @GetMapping("/register")
