@@ -1,6 +1,7 @@
 package es.laura.saborYNoche.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableWebSecurity
@@ -33,15 +35,17 @@ public class SpringSecurity {
                                 .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/users").hasRole("USER")
+                                .requestMatchers("/ocio").permitAll()
                 ).formLogin(
                         form -> form
                                 .loginPage("/index")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/users")
+                                .defaultSuccessUrl("/users", true)
                                 .permitAll()
                 ).logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .logoutSuccessUrl("/index")
                                 .permitAll()
                 );
         return http.build();
@@ -52,5 +56,9 @@ public class SpringSecurity {
         auth
                 .userDetailsService(userDetailsService) // Asegúrate de que estás utilizando tu servicio personalizado
                 .passwordEncoder(passwordEncoder());
+    }
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
     }
 }
