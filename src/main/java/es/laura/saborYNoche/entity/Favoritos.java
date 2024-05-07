@@ -1,9 +1,13 @@
 package es.laura.saborYNoche.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
     @Entity
+    @Getter
+    @Setter
     @Table(name = "Favoritos")
     public class Favoritos {
 
@@ -12,47 +16,16 @@ import jakarta.persistence.*;
 
         private Integer id;
 
-        @ManyToOne
+        @OneToOne
         @JoinColumn(name = "id_usuario", nullable = false)
         private User usuario;
 
-        @ManyToOne
+        @OneToOne
         @JoinColumn(name = "id_empresa", nullable = false)
         private Empresa empresa;
 
         private boolean activo;
 
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public User getUser() {
-            return usuario;
-        }
-
-        public void setUser(User usuario) {
-            this.usuario = usuario;
-        }
-
-        public Empresa getEmpresa() {
-            return empresa;
-        }
-
-        public void setEmpresa(Empresa empresa) {
-            this.empresa = empresa;
-        }
-
-        public boolean isActivo() {
-            return activo;
-        }
-
-        public void setActivo(boolean activo) {
-            this.activo = activo;
-        }
     }
 
 

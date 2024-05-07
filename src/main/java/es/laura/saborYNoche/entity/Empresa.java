@@ -1,11 +1,14 @@
 package es.laura.saborYNoche.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "empresas")
+@Getter
+@Setter
 public class Empresa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,122 +23,19 @@ public class Empresa {
     private String urlImagen;
     private boolean activo;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private User usuario;
 
-    @ManyToOne
+    // Relación uno a uno con TipoEstablecimiento
+    @OneToOne
     @JoinColumn(name = "id_tipo_establecimiento", nullable = false)
     private TipoEstablecimiento tipoEstablecimiento;
 
-    @ManyToOne
+    // Relación uno a uno con Categoria
+    @OneToOne
     @JoinColumn(name = "id_categoria", nullable = false)
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "empresa")
-    private List<Votos> votos;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getCodigoPostal() {
-        return codigoPostal;
-    }
-
-    public void setCodigoPostal(String codigoPostal) {
-        this.codigoPostal = codigoPostal;
-    }
-
-    public String getPoblacion() {
-        return poblacion;
-    }
-
-    public void setPoblacion(String poblacion) {
-        this.poblacion = poblacion;
-    }
-
-    public String getProvincia() {
-        return provincia;
-    }
-
-    public void setProvincia(String provincia) {
-        this.provincia = provincia;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getUrlImagen() {
-        return urlImagen;
-    }
-
-    public void setUrlImagen(String urlImagen) {
-        this.urlImagen = urlImagen;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public User getUser() {
-        return usuario;
-    }
-
-    public void setUser(User usuario) {
-        this.usuario = usuario;
-    }
-
-    public TipoEstablecimiento getTipoEstablecimiento() {
-        return tipoEstablecimiento;
-    }
-
-    public void setTipoEstablecimiento(TipoEstablecimiento tipoEstablecimiento) {
-        this.tipoEstablecimiento = tipoEstablecimiento;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    public List<Votos> getVotos() {
-        return votos;
-    }
-
-    public void setVotos(List<Votos> votos) {
-        this.votos = votos;
-    }
+    // Otros campos y métodos si es necesario
 }

@@ -33,6 +33,8 @@ public class User {
   @JoinColumn(name = "role_id")
   private Role role;
 
+  @Column(nullable=false)
+  private boolean esEmpresario;
   }
 
 

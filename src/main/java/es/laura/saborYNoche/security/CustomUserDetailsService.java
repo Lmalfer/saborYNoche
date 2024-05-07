@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -27,12 +28,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email);
 
         if (user != null) {
-            Collection<? extends GrantedAuthority> authorities;
+            Collection<GrantedAuthority> authorities = new ArrayList<>();
             if (user.getRole() != null) {
-                authorities = mapRolesToAuthorities(user.getRole());
-            } else {
-                authorities = Collections.emptyList();
+                authorities.addAll(mapRolesToAuthorities(user.getRole()));
             }
+
+            // Verificar si el usuario es un empresario y agregar el rol correspondiente
+            if (user.isEsEmpresario()) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_EMPRESARIO"));
+            }
+
             return new org.springframework.security.core.userdetails.User(user.getEmail(),
                     user.getPassword(),
                     authorities);
@@ -40,6 +45,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
     }
+
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Role role) {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());

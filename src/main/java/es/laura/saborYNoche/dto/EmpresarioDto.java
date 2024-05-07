@@ -11,9 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto
-{
-    private Long id;
+public class EmpresarioDto {
     @NotEmpty
     private String firstName;
     @NotEmpty
@@ -23,6 +21,13 @@ public class UserDto
     private String email;
     @NotEmpty(message = "Password should not be empty")
     private String password;
-    private boolean esEmpresario;
-    private String role;
+    // Otros campos específicos para usuarios empresarios
+    private String nombreEmpresa;
+    private String direccionEmpresa;
+    private String codigoPostalEmpresa;
+    private String poblacionEmpresa;
+    private String provinciaEmpresa;
+    private String descripcionEmpresa;
+    private String urlImagenEmpresa;
+    private boolean activo;
 }

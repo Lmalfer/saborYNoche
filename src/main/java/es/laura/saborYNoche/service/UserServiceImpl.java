@@ -1,5 +1,6 @@
 package es.laura.saborYNoche.service;
 
+import es.laura.saborYNoche.dto.EmpresarioDto;
 import es.laura.saborYNoche.dto.UserDto;
 import es.laura.saborYNoche.entity.Role;
 import es.laura.saborYNoche.entity.User;
@@ -37,19 +38,33 @@ import java.util.stream.Collectors;
 
             // Obtener el rol correspondiente (en este caso, ROLE_USER)
             Role role = roleRepository.findByName("ROLE_USER");
-            if (role == null) {
-                // Si no se encuentra el rol, puedes crearlo y guardarlo
-                role = new Role("ROLE_USER");
-                roleRepository.save(role);
-            }
+            // Utilizar el operador ternario para asignar un valor predeterminado si role es nulo
+            role = role != null ? role : new Role("ROLE_USER");
             // Asignar el rol al usuario
             user.setRole(role);
 
             userRepository.save(user);
         }
 
+        @Override
+        public void saveEmpresario(EmpresarioDto empresarioDto) {
+            User user = new User();
+            user.setName(empresarioDto.getFirstName() + " " + empresarioDto.getLastName());
+            user.setEmail(empresarioDto.getEmail());
+            user.setPassword(passwordEncoder.encode(empresarioDto.getPassword()));
 
+            // Obtener el rol correspondiente (en este caso, ROLE_EMPRESARIO)
+            Role role = roleRepository.findByName("ROLE_EMPRESARIO");
+            // Utilizar el operador ternario para asignar un valor predeterminado si role es nulo
+            role = role != null ? role : new Role("ROLE_EMPRESARIO");
+            // Asignar el rol al usuario
+            user.setRole(role);
 
+            // Manejar la lógica de empresario aquí
+            user.setEsEmpresario(true);
+
+            userRepository.save(user);
+        }
 
         @Override
         public User findUserByEmail(String email) {
