@@ -37,9 +37,10 @@ public class SpringSecurity {
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/users").hasRole("USER")
                                 .requestMatchers("/ocio").permitAll()
+
                 ).formLogin(
                         form -> form
-                                .loginPage("/index").permitAll()
+                                .loginPage("/login")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/users", true)
                                 .permitAll()
