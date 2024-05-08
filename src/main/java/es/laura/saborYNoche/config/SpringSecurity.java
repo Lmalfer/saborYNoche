@@ -1,5 +1,6 @@
 package es.laura.saborYNoche.config;
 
+import es.laura.saborYNoche.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,7 @@ import org.springframework.web.client.RestTemplate;
 public class SpringSecurity {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private CustomUserDetailsService customUserDetailsService; // Cambiado a CustomUserDetailsService
 
     @Bean
     public static PasswordEncoder passwordEncoder(){
@@ -54,7 +55,7 @@ public class SpringSecurity {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(userDetailsService) // Asegúrate de que estás utilizando tu servicio personalizado
+                .userDetailsService(customUserDetailsService) // Cambiado a customUserDetailsService
                 .passwordEncoder(passwordEncoder());
     }
     @Bean
