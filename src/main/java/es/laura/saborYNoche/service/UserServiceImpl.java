@@ -1,6 +1,5 @@
 package es.laura.saborYNoche.service;
 
-import es.laura.saborYNoche.dto.EmpresarioDto;
 import es.laura.saborYNoche.dto.UserDto;
 import es.laura.saborYNoche.entity.Role;
 import es.laura.saborYNoche.entity.User;
@@ -13,58 +12,43 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-    @Service
-    public class UserServiceImpl implements UserService {
+@Service
+public class UserServiceImpl implements UserService {
 
-        private UserRepository userRepository;
-        private RoleRepository roleRepository;
-        private PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
 
-        public UserServiceImpl(UserRepository userRepository,
-                               RoleRepository roleRepository,
-                               PasswordEncoder passwordEncoder) {
-            this.userRepository = userRepository;
-            this.roleRepository = roleRepository;
-            this.passwordEncoder = passwordEncoder;
+    public UserServiceImpl(UserRepository userRepository,
+                           RoleRepository roleRepository,
+                           PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public void saveUser(UserDto userDto) {
+        User user = new User();
+        user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        // Obtener el rol correspondiente (en este caso, ROLE_USER)
+        Role role = roleRepository.findByName("ROLE_USER");
+        if (role == null) {
+            // Si el rol no existe, créalo y guárdalo en la base de datos
+            role = new Role("ROLE_USER");
+            roleRepository.save(role);
         }
 
-        // UserServiceImpl.java
-        @Override
-        public void saveUser(UserDto userDto) {
-            User user = new User();
-            user.setName(userDto.getFirstName() + " " + userDto.getLastName());
-            user.setEmail(userDto.getEmail());
-            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        // Asignar el rol al usuario
+        user.setRole(role);
 
-            // Obtener el rol correspondiente (en este caso, ROLE_USER)
-            Role role = roleRepository.findByName("ROLE_USER");
-            // Utilizar el operador ternario para asignar un valor predeterminado si role es nulo
-            role = role != null ? role : new Role("ROLE_USER");
-            // Asignar el rol al usuario
-            user.setRole(role);
+        userRepository.save(user);
+    }
 
-            userRepository.save(user);
-        }
 
-        @Override
-        public void saveEmpresario(EmpresarioDto empresarioDto) {
-            User user = new User();
-            user.setName(empresarioDto.getFirstName() + " " + empresarioDto.getLastName());
-            user.setEmail(empresarioDto.getEmail());
-            user.setPassword(passwordEncoder.encode(empresarioDto.getPassword()));
-
-            // Obtener el rol correspondiente (en este caso, ROLE_EMPRESARIO)
-            Role role = roleRepository.findByName("ROLE_EMPRESARIO");
-            // Utilizar el operador ternario para asignar un valor predeterminado si role es nulo
-            role = role != null ? role : new Role("ROLE_EMPRESARIO");
-            // Asignar el rol al usuario
-            user.setRole(role);
-
-            // Manejar la lógica de empresario aquí
-            user.setEsEmpresario(true);
-
-            userRepository.save(user);
-        }
 
         @Override
         public User findUserByEmail(String email) {
