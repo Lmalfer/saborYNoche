@@ -1,12 +1,13 @@
 package es.laura.saborYNoche.entity;
 
+import es.laura.saborYNoche.entity.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -18,11 +19,12 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable=false, unique=true)
-    private String name;
+    private Rol name;
 
-    public Role(String roleUser) {
-        this.name = roleUser;
+    public Role(Rol rol) {
+        this.name = rol;
     }
-}
 
+}

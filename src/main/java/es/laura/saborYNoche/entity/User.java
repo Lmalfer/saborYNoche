@@ -1,12 +1,14 @@
 package es.laura.saborYNoche.entity;
 
+import es.laura.saborYNoche.entity.enums.Rol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@Getter
+
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -33,6 +35,4 @@ public class User {
 
   @Column(nullable=false)
   private boolean esEmpresario;
-  }
-
-
+}
