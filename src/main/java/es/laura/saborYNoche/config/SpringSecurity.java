@@ -33,19 +33,18 @@ public class SpringSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/css/**").permitAll() // Desde SecurityConfiguration
-                                .requestMatchers("/register/**").permitAll() // Desde SpringSecurity
-                                .requestMatchers("/index").permitAll() // Desde SpringSecurity
-                                .requestMatchers("/users").hasRole("USER") // Desde SpringSecurity
-                                .requestMatchers("/empresarios").hasRole("EMPRESARIO") // Desde SpringSecurity
-                                .requestMatchers("/ocio").permitAll() // Desde SpringSecurity
+                                .requestMatchers("/css/**").permitAll()
+                                .requestMatchers("/register/**").permitAll()
+                                .requestMatchers("/index").permitAll()
+                                .requestMatchers("/users").hasRole("USER")
+                                .requestMatchers("/empresarios").hasRole("EMPRESARIO")
+                                .requestMatchers("/ocio").permitAll()
                 )
                 .formLogin(
                         form -> form
                                 .loginPage("/index")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/users", true)
-                                .defaultSuccessUrl("/empresarios", true)
+                                .defaultSuccessUrl("/", true)
                                 .permitAll()
                 )
                 .logout(
