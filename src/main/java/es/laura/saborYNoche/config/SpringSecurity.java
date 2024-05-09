@@ -33,23 +33,28 @@ public class SpringSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users").hasRole("USER")
-                                .requestMatchers("/ocio").permitAll()
-
-                ).formLogin(
+                                .requestMatchers("/css/**").permitAll() // Desde SecurityConfiguration
+                                .requestMatchers("/register/**").permitAll() // Desde SpringSecurity
+                                .requestMatchers("/index").permitAll() // Desde SpringSecurity
+                                .requestMatchers("/users").hasRole("USER") // Desde SpringSecurity
+                                .requestMatchers("/empresarios").hasRole("EMPRESARIO") // Desde SpringSecurity
+                                .requestMatchers("/ocio").permitAll() // Desde SpringSecurity
+                )
+                .formLogin(
                         form -> form
-                                .loginPage("/login")
+                                .loginPage("/index")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/users", true)
+                                .defaultSuccessUrl("/empresarios", true)
                                 .permitAll()
-                ).logout(
+                )
+                .logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .logoutSuccessUrl("/index")
                                 .permitAll()
                 );
+
         return http.build();
     }
 
