@@ -1,8 +1,6 @@
 package es.laura.saborYNoche.entity;
 
-import es.laura.saborYNoche.entity.enums.Rol;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,9 +30,6 @@ public class User {
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "role_id")
-  @NotNull
   private Role role;
 
-  @Column(nullable=false)
-  private boolean esEmpresario;
 }
