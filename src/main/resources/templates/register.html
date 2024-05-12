@@ -63,10 +63,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">¿Eres empresario?</label><br>
-                        <input type="checkbox" id="esEmpresario" name="esEmpresario" value="true">
-                        <label for="esEmpresario">Sí, soy empresario</label><br>
-                        <!-- Agregar un campo hidden para el rol -->
-                        <input type="hidden" id="rol" name="rol" value="USER">
+                        <input type="checkbox" name="role" value="EMPRESARIO">
+                        <label >Sí, soy empresario</label><br>
                     </div>
                     <div class="form-group mb-3">
                         <label class="form-label">Email</label>
@@ -90,14 +88,20 @@
     </div>
 </div>
 
-<!-- Script para cambiar el valor del campo rol -->
 <script th:inline="javascript">
-    $('#esEmpresario').change(function() {
-        if ($(this).is(':checked')) {
-            $('#rol').val('ROLE_EMPRESARIO');
-        } else {
-            $('#rol').val('ROLE_USER');
-        }
+    // Obtener el checkbox
+    const checkbox = document.getElementsByName('role')[0];
+
+    // Escuchar cambios en el checkbox
+    checkbox.addEventListener('change', function() {
+        // Obtener el valor actual del checkbox
+        const isChecked = this.checked;
+
+        // Obtener el campo de rol
+        const rolInput = document.getElementsByName('role')[0];
+
+        // Establecer el valor del campo de rol según el estado del checkbox
+        rolInput.value = isChecked ? 'EMPRESARIO' : 'USER';
     });
 </script>
 

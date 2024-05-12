@@ -1,6 +1,6 @@
 package es.laura.saborYNoche.entity;
 
-import es.laura.saborYNoche.entity.enums.Rol;
+import es.laura.saborYNoche.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,10 +21,7 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable=false, unique=true)
-    private Rol name;
+    private RoleEnum name;
 
-    public Role(Rol rol) {
-        this.name = rol;
-    }
 
 }

@@ -1,5 +1,6 @@
 package es.laura.saborYNoche.dto;
 
+import es.laura.saborYNoche.enums.RoleEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -30,4 +31,5 @@ public class EmpresarioDto {
     private String descripcionEmpresa;
     private String urlImagenEmpresa;
     private boolean activo;
+    private RoleEnum role;
 }

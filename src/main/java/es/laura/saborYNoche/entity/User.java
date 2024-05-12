@@ -1,5 +1,6 @@
 package es.laura.saborYNoche.entity;
 
+import es.laura.saborYNoche.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,8 +29,8 @@ public class User {
   @Column(nullable=false)
   private String password;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "role_id")
-  private Role role;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable=false)
+  private RoleEnum role;
 
 }

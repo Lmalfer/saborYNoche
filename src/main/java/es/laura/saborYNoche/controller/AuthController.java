@@ -1,10 +1,14 @@
 package es.laura.saborYNoche.controller;
 
 import es.laura.saborYNoche.dto.UserDto;
+import es.laura.saborYNoche.entity.Role;
 import es.laura.saborYNoche.entity.User;
+import es.laura.saborYNoche.enums.RoleEnum;
+import es.laura.saborYNoche.service.RoleService;
 import es.laura.saborYNoche.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,69 +17,78 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
+import java.util.Collection;
 
 @Controller
 public class AuthController {
 
-    private UserService userService;
+    private final UserService userService;
+    private final RoleService roleService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
-    // handler method to handle home page request
     @GetMapping("/index")
-    public String home(){
+    public String home() {
         return "index";
     }
 
-    // handler method to handle login request
     @GetMapping("/login")
-    public String login(Model model){
-        // Obtener el nombre del usuario autenticado
+    public String login() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        model.addAttribute("username", username);
+        if (authentication != null && authentication.isAuthenticated()) {
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            if (authorities.contains(new SimpleGrantedAuthority("ROLE_EMPRESARIO"))) {
+                return "redirect:/empresarios";
+            } else if (authorities.contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+                return "redirect:/users";
+            }
+        }
         return "login";
     }
 
 
-    // handler method to handle user registration form request
     @GetMapping("/register")
-    public String showRegistrationForm(Model model){
-        // create model object to store form data
+    public String showRegistrationForm(Model model) {
         UserDto user = new UserDto();
         model.addAttribute("user", user);
         return "register";
     }
 
-    // handler method to handle user registration form submit request
     @PostMapping("/register/save")
-    public String registration(@Valid @ModelAttribute("user") UserDto userDto,
-                               BindingResult result,
-                               Model model){
+    public String registration(@ModelAttribute("user") UserDto userDto,
+                               BindingResult result) {
         User existingUser = userService.findUserByEmail(userDto.getEmail());
 
-        if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
-            result.rejectValue("email", null,
-                    "There is already an account registered with the same email");
+        if (existingUser != null) {
+            result.rejectValue("email", null, "There is already an account registered with the same email");
         }
 
-        if(result.hasErrors()){
-            model.addAttribute("user", userDto);
-            return "register"; // Corregido: No es necesario incluir una barra inicial en el nombre de la vista
+        if (result.hasErrors()) {
+            return "register";
         }
 
         userService.saveUser(userDto);
-        return "redirect:/register?success"; // Corregido: Redirigir a una URL permitida sin autenticación
+        return "redirect:/register?success";
     }
 
-    // handler method to handle list of users
     @GetMapping("/users")
-    public String users(Model model){
-        List<UserDto> users = userService.findAllUsers();
-        model.addAttribute("users", users);
+    public String users(Model model) {
+        model.addAttribute("users", userService.findAllUsers());
         return "users";
     }
+
+    @GetMapping("/empresarios")
+    public String empresarios(Model model) {
+        // Aquí debes proporcionar el nombre del rol empresario como un RoleEnum
+        Role roleEmpresario = roleService.findRoleByName(RoleEnum.EMPRESARIO);
+
+        // Agregar el rol encontrado al modelo para que pueda ser usado en la vista
+        model.addAttribute("empresarios", roleEmpresario);
+
+        return "empresarios";
+    }
+
 }
