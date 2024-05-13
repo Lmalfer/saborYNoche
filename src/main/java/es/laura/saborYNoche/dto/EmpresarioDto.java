@@ -22,14 +22,6 @@ public class EmpresarioDto {
     private String email;
     @NotEmpty(message = "Password should not be empty")
     private String password;
-    // Otros campos específicos para usuarios empresarios
-    private String nombreEmpresa;
-    private String direccionEmpresa;
-    private String codigoPostalEmpresa;
-    private String poblacionEmpresa;
-    private String provinciaEmpresa;
-    private String descripcionEmpresa;
-    private String urlImagenEmpresa;
     private boolean activo;
     private RoleEnum role;
 }
