@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sabor y Noche - Nueva Empresa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="container">
+    <div class="row">
+        <h1 class="text-center">Nueva Empresa</h1>
+    </div>
+    <form th:action="@{/adminEmpresa/nuevaEmpresa}" th:object="${empresa}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" id="nombre" th:field="*{nombre}">
+            <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea class="form-control" id="descripcion" th:field="*{descripcion}"></textarea>
+            <span th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input type="text" class="form-control" id="direccion" th:field="*{direccion}">
+            <span th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="provincia">Provincia</label>
+            <input type="text" class="form-control" id="provincia" th:field="*{provincia}">
+            <span th:if="${#fields.hasErrors('provincia')}" th:errors="*{provincia}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="comunidad">Comunidad</label>
+            <input type="text" class="form-control" id="comunidad" th:field="*{comunidad}">
+            <span th:if="${#fields.hasErrors('comunidad')}" th:errors="*{comunidad}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="poblacion">Población</label>
+            <input type="text" class="form-control" id="poblacion" th:field="*{poblacion}">
+            <span th:if="${#fields.hasErrors('poblacion')}" th:errors="*{poblacion}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="codigoPostal">Código Postal</label>
+            <input type="text" class="form-control" id="codigoPostal" th:field="*{codigoPostal}">
+            <span th:if="${#fields.hasErrors('codigoPostal')}" th:errors="*{codigoPostal}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Categorías</label>
+            <div th:each="categoria : ${categorias}">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" th:field="*{categorias}" th:value="${categoria.id}" th:id="${'categoria_' + categoria.id}">
+                    <label class="form-check-label" th:for="${'categoria_' + categoria.id}" th:text="${categoria.nombre}"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="tipoEstablecimiento">Tipo de Establecimiento</label>
+            <select class="form-control" id="tipoEstablecimiento" th:field="*{tipoEstablecimiento}">
+                <option th:each="tipoEstablecimiento : ${tiposEstablecimiento}" th:value="${tipoEstablecimiento.id}" th:text="${tipoEstablecimiento.nombre}"></option>
+            </select>
+            <span th:if="${#fields.hasErrors('tipoEstablecimiento')}" th:errors="*{tipoEstablecimiento}" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="urlImagen">Imagen</label>
+            <input type="file" class="form-control" id="urlImagen" th:field="*{urlImagen}">
+            <span th:if="${#fields.hasErrors('urlImagen')}" th:errors="*{urlImagen}" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="/adminEmpresa" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

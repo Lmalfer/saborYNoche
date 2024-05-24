@@ -1,7 +1,6 @@
 package es.laura.saborYNoche.enums;
 
 public enum RoleEnum {
-    ADMIN("ROLE_ADMIN"),
     USER("ROLE_USER"),
     EMPRESARIO("ROLE_EMPRESARIO");
 

@@ -1,6 +1,6 @@
 package es.laura.saborYNoche.repository;
 
-import es.laura.saborYNoche.entity.Role;
+import es.laura.saborYNoche.model.Role;
 import es.laura.saborYNoche.enums.RoleEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 

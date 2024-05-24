@@ -1,4 +1,4 @@
-package es.laura.saborYNoche.entity;
+package es.laura.saborYNoche.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +15,6 @@ public class Votos {
     private int notaComida;
     private int notaServicio;
     private int notaAmbiente;
-    private boolean activo;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", nullable = false)

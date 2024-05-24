@@ -1,6 +1,6 @@
 package es.laura.saborYNoche.service;
 
-import es.laura.saborYNoche.entity.Role;
+import es.laura.saborYNoche.model.Role;
 import es.laura.saborYNoche.enums.RoleEnum;
 import es.laura.saborYNoche.repository.RoleRepository;
 import org.springframework.stereotype.Service;

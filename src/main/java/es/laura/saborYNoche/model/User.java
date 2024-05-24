@@ -1,4 +1,4 @@
-package es.laura.saborYNoche.entity;
+package es.laura.saborYNoche.model;
 
 import es.laura.saborYNoche.enums.RoleEnum;
 import jakarta.persistence.*;

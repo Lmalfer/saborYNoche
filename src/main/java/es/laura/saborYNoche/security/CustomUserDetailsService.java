@@ -1,6 +1,6 @@
 package es.laura.saborYNoche.security;
 
-import es.laura.saborYNoche.entity.User;
+import es.laura.saborYNoche.model.User;
 import es.laura.saborYNoche.enums.RoleEnum;
 import es.laura.saborYNoche.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

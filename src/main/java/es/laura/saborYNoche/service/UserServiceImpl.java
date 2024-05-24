@@ -1,9 +1,11 @@
 package es.laura.saborYNoche.service;
 
 import es.laura.saborYNoche.dto.UserDto;
-import es.laura.saborYNoche.entity.User;
+import es.laura.saborYNoche.model.User;
 import es.laura.saborYNoche.enums.RoleEnum;
 import es.laura.saborYNoche.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -60,5 +62,16 @@ public class UserServiceImpl implements UserService {
         userDto.setEmail(user.getEmail());
         userDto.setRole(user.getRole());
         return userDto;
+    }
+    @Override
+    public User getUsuarioActual() {
+        // Obtiene el nombre de usuario del UserDetails actual
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        // Busca al usuario en la base de datos por su nombre de usuario
+        return userRepository.findByEmail(username);
+    }
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
 }

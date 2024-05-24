@@ -1,8 +1,8 @@
 package es.laura.saborYNoche.controller;
 
 import es.laura.saborYNoche.dto.UserDto;
-import es.laura.saborYNoche.entity.Role;
-import es.laura.saborYNoche.entity.User;
+import es.laura.saborYNoche.model.Role;
+import es.laura.saborYNoche.model.User;
 import es.laura.saborYNoche.enums.RoleEnum;
 import es.laura.saborYNoche.service.RoleService;
 import es.laura.saborYNoche.service.UserService;
