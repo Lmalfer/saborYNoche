@@ -1,14 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Empresas - Sabor y Noche</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+    <style>
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
+<div th:if="${not #authorization.expression('isAuthenticated()')}" th:include="~{fragments/header-non-registered}"></div>
+<div th:if="${#authorization.expression('isAuthenticated()')}" th:include="~{fragments/header-registered}"></div>
+
+<div class="container mt-4">
+    <form method="get" action="/ocio/empresas">
+        <div class="row mb-4">
+            <div class="col-md-6 position-relative">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                    <input type="text" class="form-control" id="provincia-input" name="provincia" placeholder="Provincia" autocomplete="off">
+                    <input type="text" class="form-control" id="poblacion-input" name="poblacion" placeholder="Población" autocomplete="off">
+                    <button class="btn btn-secondary" type="button" onclick="clearLocationInput()">X</button>
+                </div>
+                <div class="dropdown-menu w-100" id="location-suggestions" style="display: none;">
+                    <div class="p-2">Sugerencias</div>
+                    <!-- Aquí se muestran las sugerencias de ubicación -->
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="search-input" name="busqueda" placeholder="Tipo de cocina, nombre del restaurante o dirección">
+                    <button class="btn btn-primary" type="submit">BÚSQUEDA</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div class="row">
-        <h1 class="text-center">Bienvenido a Sabor y Noche</h1>
+        <div class="col-md-8">
+            <h1 class="text-center">Empresas</h1>
+            <div class="row" id="empresas-container">
+                <!-- Iterar sobre las empresas y crear una tarjeta para cada una -->
+                <!-- Aquí se muestran las tarjetas de empresa -->
+                <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card">
+                    <div class="card">
+                        <img th:if="${empresa.imagenBase64 != null}" th:src="'data:image/jpeg;base64,' + ${empresa.imagenBase64}" class="card-img-top" alt="Imagen de [[${empresa.nombre}]]">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${empresa.nombre}">Nombre Empresa</h5>
+                            <p class="card-text" th:text="${empresa.descripcion}">Descripción de la empresa</p>
+                            <p class="card-text"><small class="text-muted" th:text="${empresa.direccion}">Dirección de la empresa</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Filtrar por:</h4>
+            <h5>Filtros populares</h5>
+            <ul class="list-unstyled">
+                <li th:each="categoria : ${categorias}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="categoria-[[${categoria.id}]]" name="categorias" value="[[${categoria.id}]]">
+                        <label class="form-check-label" for="categoria-[[${categoria.id}]]" th:text="${categoria.nombre}">Categoría</label>
+                    </div>
+                </li>
+            </ul>
+            <h5>Tipos de establecimiento</h5>
+            <ul class="list-unstyled">
+                <li th:each="tipo : ${tiposEstablecimiento}">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="tipo-[[${tipo.id}]]" name="tipos" value="[[${tipo.id}]]">
+                        <label class="form-check-label" for="tipo-[[${tipo.id}]]" th:text="${tipo.nombre}">Tipo de Establecimiento</label>
+                    </div>
+                </li>
+            </ul>
+            <button class="btn btn-primary" onclick="capturarFiltros()">Filtrar</button> <!-- Agregar el evento onclick -->
+            <input type="hidden" id="categoriasSeleccionadas" name="categorias"> <!-- Corregir el nombre del input -->
+            <input type="hidden" id="tiposSeleccionados" name="tipos"> <!-- Corregir el nombre del input -->
+        </div>
     </div>
 </div>
+        <!-- Scripts necesarios para Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('provincia-input').addEventListener('input', function() {
+        updateSuggestions(this.value.toLowerCase());
+    });
+
+    document.getElementById('poblacion-input').addEventListener('input', function() {
+        updateSuggestions(this.value.toLowerCase());
+    });
+
+    function updateSuggestions(input) {
+        var suggestions = document.getElementById('location-suggestions');
+        var items = suggestions.getElementsByClassName('dropdown-item');
+        var hasMatch = false;
+
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if (item.textContent.toLowerCase().includes(input)) {
+                item.style.display = '';
+                hasMatch = true;
+            } else {
+                item.style.display = 'none';
+            }
+        }
+        suggestions.style.display = hasMatch ? 'block' : 'none';
+    }
+
+    function selectLocation(item) {
+        var provinciaInput = document.getElementById('provincia-input');
+        var poblacionInput = document.getElementById('poblacion-input');
+
+        if (item.textContent.toLowerCase().includes(provinciaInput.value.toLowerCase())) {
+            provinciaInput.value = item.textContent;
+        } else if (item.textContent.toLowerCase().includes(poblacionInput.value.toLowerCase())) {
+            poblacionInput.value = item.textContent;
+        }
+        document.getElementById('location-suggestions').style.display = 'none';
+    }
+
+    function clearLocationInput() {
+        document.getElementById('provincia-input').value = '';
+        document.getElementById('poblacion-input').value = '';
+        document.getElementById('location-suggestions').style.display = 'none';
+    }
+    // Función para enviar el formulario cuando se haga clic en el botón de filtrar
+    document.querySelector('.btn-primary').addEventListener('click', function() {
+        document.querySelector('form').submit();
+    });
+    function capturarFiltros() {
+        var categoriasSeleccionadas = [];
+        var tiposSeleccionados = [];
+
+        // Capturar las categorías seleccionadas
+        document.querySelectorAll('input[name="categoria"]:checked').forEach(function(checkbox) {
+            categoriasSeleccionadas.push(checkbox.value);
+        });
+
+        // Capturar los tipos de establecimiento seleccionados
+        document.querySelectorAll('input[name="tipo"]:checked').forEach(function(checkbox) {
+            tiposSeleccionados.push(checkbox.value);
+        });
+
+        // Construir la URL con los parámetros de categoría y tipo
+        var url = '/ocio/empresas?';
+        url += 'provincia=' + encodeURIComponent(document.getElementById('provincia-input').value) + '&';
+        url += 'poblacion=' + encodeURIComponent(document.getElementById('poblacion-input').value) + '&';
+        url += 'busqueda=' + encodeURIComponent(document.getElementById('search-input').value);
+
+        // Agregar categorías seleccionadas a la URL
+        categoriasSeleccionadas.forEach(function(categoria) {
+            url += '&categoria=' + categoria;
+        });
+
+        // Agregar tipos seleccionados a la URL
+        tiposSeleccionados.forEach(function(tipo) {
+            url += '&tipo=' + tipo;
+        });
+
+        // Redirigir a la URL construida
+        window.location.href = url;
+    }
+</script>
 </body>
 </html>

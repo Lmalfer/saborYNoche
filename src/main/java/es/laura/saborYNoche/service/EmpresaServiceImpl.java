@@ -1,23 +1,37 @@
 package es.laura.saborYNoche.service;
 
 import es.laura.saborYNoche.exception.RecursoNoEncontradoException;
+import es.laura.saborYNoche.model.Categoria;
 import es.laura.saborYNoche.model.Empresa;
+import es.laura.saborYNoche.model.TipoEstablecimiento;
 import es.laura.saborYNoche.model.User;
+import es.laura.saborYNoche.repository.CategoriaRepository;
 import es.laura.saborYNoche.repository.EmpresaRepository;
+import es.laura.saborYNoche.repository.TipoEstablecimientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmpresaServiceImpl implements EmpresaService {
 
+    private final EmpresaRepository empresaRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final TipoEstablecimientoRepository tipoEstablecimientoRepository;
+
     @Autowired
-    private EmpresaRepository empresaRepositorio;
+    public EmpresaServiceImpl(EmpresaRepository empresaRepository, CategoriaRepository categoriaRepository, TipoEstablecimientoRepository tipoEstablecimientoRepository) {
+        this.empresaRepository = empresaRepository;
+        this.categoriaRepository = categoriaRepository;
+        this.tipoEstablecimientoRepository = tipoEstablecimientoRepository;
+    }
 
     @Override
-    public Page<Empresa> listarTodasLasEmpresas(Pageable pageable) {
-        return empresaRepositorio.findAll(pageable);
+    public List<Empresa> listarTodasLasEmpresas() {
+        return empresaRepository.findAll();
     }
 
     @Override
@@ -25,24 +39,44 @@ public class EmpresaServiceImpl implements EmpresaService {
         if (empresa.getUser() == null) {
             throw new IllegalArgumentException("El usuario no puede ser nulo");
         }
-        empresaRepositorio.save(empresa);
+        empresaRepository.save(empresa);
     }
 
     @Override
     public Empresa obtenerEmpresaPorId(Integer id) {
-        return empresaRepositorio.findById(id)
+        return empresaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Empresa no encontrada con ID: " + id));
     }
 
     @Override
     public void eliminarEmpresa(Integer id) {
-        Empresa empresa = empresaRepositorio.findById(id)
+        Empresa empresa = empresaRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Empresa no encontrada con id " + id));
-        empresaRepositorio.delete(empresa);
+        empresaRepository.delete(empresa);
     }
 
     @Override
     public Page<Empresa> listarEmpresasPorUsuario(User user, Pageable pageable) {
-        return empresaRepositorio.findByUser(user, pageable);
+        return empresaRepository.findByUser(user, pageable);
+    }
+
+    @Override
+    public List<Empresa> buscarEmpresas(String provincia, String poblacion, String busqueda) {
+        return empresaRepository.buscarEmpresas(provincia, poblacion, busqueda);
+    }
+
+    @Override
+    public List<Categoria> listarTodasLasCategorias() {
+        return categoriaRepository.findAll();
+    }
+
+    @Override
+    public List<TipoEstablecimiento> listarTodosLosTipos() {
+        return tipoEstablecimientoRepository.findAll();
+    }
+
+    @Override
+    public List<Empresa> buscarEmpresasPorCategoriasYTipo(List<Integer> categorias, Integer tipo) {
+        return empresaRepository.buscarEmpresasPorCategoriasYTipo(categorias, tipo);
     }
 }

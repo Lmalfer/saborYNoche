@@ -116,7 +116,6 @@ public class EmpresaController {
                 .addObject("tiposEstablecimiento", tiposEstablecimiento);
     }
 
-    // Actualizar empresa
     @PostMapping("/{id}/editarEmpresa")
     public ModelAndView actualizarEmpresa(@PathVariable Integer id, @Validated Empresa empresa, BindingResult bindingResult) {
         MultipartFile urlImagen = empresa.getUrlImagen();
@@ -128,10 +127,13 @@ public class EmpresaController {
                     .addObject("categorias", categorias)
                     .addObject("tiposEstablecimiento", tiposEstablecimiento);
         }
+
         Empresa empresaDB = empresaService.obtenerEmpresaPorId(id);
         if (empresaDB == null) {
             throw new RecursoNoEncontradoException("Empresa no encontrada con id " + id);
         }
+
+        // Copiar los datos de la empresa del formulario a la empresa obtenida de la base de datos
         empresaDB.setNombre(empresa.getNombre());
         empresaDB.setDescripcion(empresa.getDescripcion());
         empresaDB.setDireccion(empresa.getDireccion());
@@ -142,12 +144,14 @@ public class EmpresaController {
         empresaDB.setPoblacion(empresa.getPoblacion());
         empresaDB.setCodigoPostal(empresa.getCodigoPostal());
 
+        // Verificar si se proporciona una nueva imagen
         if (!urlImagen.isEmpty()) {
             try {
                 byte[] imagenBytes = urlImagen.getBytes();
                 String base64Image = Base64.getEncoder().encodeToString(imagenBytes);
                 empresaDB.setImagenBase64(base64Image);
             } catch (IOException e) {
+                // Manejar error de procesamiento de imagen
                 bindingResult.rejectValue("urlImagen", "Error.urlImagen", "Error al procesar la imagen");
                 List<Categoria> categorias = categoriaRepositorio.findAll(Sort.by("nombre"));
                 List<TipoEstablecimiento> tiposEstablecimiento = tipoEstablecimientoRepositorio.findAll(Sort.by("nombre"));
@@ -158,9 +162,13 @@ public class EmpresaController {
             }
         }
 
+        // Guardar la empresa
         empresaService.guardarEmpresa(empresaDB);
+
+        // Redireccionar a la página de administración
         return new ModelAndView("redirect:/adminEmpresa");
     }
+
 
     // Eliminar empresa
     @PostMapping("/{id}/eliminarEmpresa")
