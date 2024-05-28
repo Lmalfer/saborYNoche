@@ -51,6 +51,8 @@ public class SpringSecurity {
                                 .requestMatchers("/adminEmpresa/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/ocio/**").permitAll()
                                 .requestMatchers("/datosPersonales").authenticated()
+                                .requestMatchers("/images/**").permitAll()
+
                 )
                 .formLogin(
                         form -> form
