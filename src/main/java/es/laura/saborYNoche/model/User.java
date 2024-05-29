@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -14,7 +18,6 @@ import lombok.Setter;
 @Entity
 @Table(name="usuarios")
 public class User {
-  private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +36,11 @@ public class User {
   @Column(nullable=false)
   private RoleEnum role;
 
+  @ManyToMany(fetch = FetchType.EAGER)//especificacion de que Hibernate debe cargar la colección categorias junto con la entidad Empresa
+  @JoinTable(
+          name = "favoritos",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "empresa_id")
+  )
+  private List<Empresa> empresas;
 }

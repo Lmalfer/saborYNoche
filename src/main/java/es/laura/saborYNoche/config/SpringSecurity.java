@@ -44,7 +44,8 @@ public class SpringSecurity {
                                 .requestMatchers("/css/**").permitAll()
                                 .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users/**").hasRole("USER")
+                                .requestMatchers("/users/**").authenticated()
+                                .requestMatchers("/favoritos/**").hasRole("USER")
                                 .requestMatchers("/empresarios/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/nuevaEmpresa/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/editarEmpresa/**").hasRole("EMPRESARIO")
@@ -52,6 +53,9 @@ public class SpringSecurity {
                                 .requestMatchers("/ocio/**").permitAll()
                                 .requestMatchers("/datosPersonales").authenticated()
                                 .requestMatchers("/images/**").permitAll()
+                                .requestMatchers("/favorito/**").permitAll()
+                                .requestMatchers("/perfil").authenticated()
+
 
                 )
                 .formLogin(

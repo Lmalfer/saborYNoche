@@ -1,22 +1,32 @@
 package es.laura.saborYNoche.service;
 
 import es.laura.saborYNoche.dto.UserDto;
+import es.laura.saborYNoche.model.Empresa;
 import es.laura.saborYNoche.model.User;
 import es.laura.saborYNoche.enums.RoleEnum;
+import es.laura.saborYNoche.repository.EmpresaRepository;
 import es.laura.saborYNoche.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private EmpresaRepository empresaRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder) {
@@ -63,6 +73,7 @@ public class UserServiceImpl implements UserService {
         userDto.setRole(user.getRole());
         return userDto;
     }
+
     @Override
     public User getUsuarioActual() {
         // Obtiene el nombre de usuario del UserDetails actual
@@ -70,8 +81,48 @@ public class UserServiceImpl implements UserService {
         // Busca al usuario en la base de datos por su nombre de usuario
         return userRepository.findByEmail(username);
     }
+
     @Override
     public void updateUser(User user) {
         userRepository.save(user);
     }
+
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public boolean isFavorito(User usuario, Empresa empresa) {
+        return usuario.getEmpresas().contains(empresa);
+    }
+
+    @Override
+    @Transactional
+    public void agregarFavorito(User usuario, Empresa empresa) {
+        usuario.getEmpresas().add(empresa);
+        userRepository.save(usuario);
+    }
+
+    @Override
+    @Transactional
+    public void eliminarFavorito(User usuario, Empresa empresa) {
+        usuario.getEmpresas().remove(empresa);
+        userRepository.save(usuario);
+        userRepository.removeFavorite(usuario.getId(), empresa);
+    }
+
+
 }
+
+

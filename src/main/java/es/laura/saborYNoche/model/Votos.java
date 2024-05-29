@@ -17,11 +17,11 @@ public class Votos {
     private int notaAmbiente;
 
     @OneToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User usuario;
 
     @OneToOne
-    @JoinColumn(name = "id_empresa", nullable = false)
+    @JoinColumn(name = "empresa_id", nullable = false)
     private Empresa empresa;
 
 

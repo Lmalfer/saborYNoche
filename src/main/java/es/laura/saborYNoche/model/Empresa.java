@@ -36,6 +36,8 @@ public class Empresa {
     @ProvinciaValida
     private String provincia;
 
+
+
     @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Constraint(validatedBy = ProvinciaValidator.class)
@@ -57,7 +59,7 @@ public class Empresa {
     }
     @CodigoPostalValido
     private String codigoPostal;
-//
+
 //    @Lob
 //    private byte[] imagen;
 
@@ -85,4 +87,5 @@ public class Empresa {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
 }

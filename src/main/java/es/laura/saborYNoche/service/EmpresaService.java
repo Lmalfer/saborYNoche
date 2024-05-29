@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmpresaService {
     List<Empresa> listarTodasLasEmpresas();
@@ -19,4 +20,7 @@ public interface EmpresaService {
     List<Categoria> listarTodasLasCategorias();
     List<TipoEstablecimiento> listarTodosLosTipos();
     List<Empresa> buscarEmpresasPorCategoriasYTipo(List<Integer> categorias, Integer tipo);
+    Optional<Empresa> findEmpresaById(Integer id);
+
+
 }

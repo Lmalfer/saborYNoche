@@ -21,11 +21,12 @@
                         Perfil
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" th:href="@{/datosPersonales}">Datos Personales</a>
+                        <a class="dropdown-item" th:href="@{/perfil}">Datos Personales</a>
                         <div class="dropdown-divider"></div>
                         <form th:action="@{/logout}" method="post">
                             <button type="submit" class="dropdown-item">Cerrar Sesión</button>
                         </form>
+
                     </div>
                 </li>
             </ul>

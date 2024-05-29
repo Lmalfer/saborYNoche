@@ -22,6 +22,6 @@ public class EmpresarioDto {
     private String email;
     @NotEmpty(message = "Password should not be empty")
     private String password;
-    private boolean activo;
+
     private RoleEnum role;
 }

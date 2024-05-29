@@ -13,6 +13,7 @@ import java.util.List;
 public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
     Page<Empresa> findByUser(User user, Pageable pageable);
 
+
     @Query("SELECT e FROM Empresa e " +
             "WHERE (:provincia IS NULL OR LOWER(e.provincia) LIKE LOWER(CONCAT('%', :provincia, '%'))) " +
             "AND (:poblacion IS NULL OR LOWER(e.poblacion) LIKE LOWER(CONCAT('%', :poblacion, '%'))) " +
@@ -22,7 +23,6 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
             @Param("provincia") String provincia,
             @Param("poblacion") String poblacion,
             @Param("busqueda") String busqueda);
-
 
     @Query("SELECT e FROM Empresa e JOIN e.categorias c WHERE c.id IN :categorias AND e.tipoEstablecimiento.id = :tipo")
     List<Empresa> buscarEmpresasPorCategoriasYTipo(

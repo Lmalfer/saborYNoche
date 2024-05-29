@@ -7,6 +7,7 @@ import es.laura.saborYNoche.model.TipoEstablecimiento;
 import es.laura.saborYNoche.model.User;
 import es.laura.saborYNoche.repository.CategoriaRepository;
 import es.laura.saborYNoche.repository.TipoEstablecimientoRepository;
+import es.laura.saborYNoche.repository.UserRepository;
 import es.laura.saborYNoche.service.EmpresaService;
 import es.laura.saborYNoche.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class EmpresaController {
 
     @Autowired
     private UserService userService;
+
 
     // Listar empresas por usuario
     @GetMapping("")
@@ -180,4 +182,5 @@ public class EmpresaController {
         empresaService.eliminarEmpresa(id);
         return "redirect:/adminEmpresa";
     }
+    
 }
