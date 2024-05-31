@@ -55,6 +55,8 @@ public class SpringSecurity {
                                 .requestMatchers("/images/**").permitAll()
                                 .requestMatchers("/favorito/**").permitAll()
                                 .requestMatchers("/perfil").authenticated()
+                                .requestMatchers("/api/votos").authenticated()
+
 
 
                 )

@@ -6,6 +6,7 @@ import es.laura.saborYNoche.model.*;
 import es.laura.saborYNoche.repository.CategoriaRepository;
 import es.laura.saborYNoche.repository.EmpresaRepository;
 import es.laura.saborYNoche.repository.TipoEstablecimientoRepository;
+import es.laura.saborYNoche.repository.UserRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +28,16 @@ public class EmpresaServiceImpl implements EmpresaService {
     private final EmpresaRepository empresaRepository;
     private final CategoriaRepository categoriaRepository;
     private final TipoEstablecimientoRepository tipoEstablecimientoRepository;
+    private final UserRepository userRepository;
+
 
 
     @Autowired
-    public EmpresaServiceImpl(EmpresaRepository empresaRepository, CategoriaRepository categoriaRepository, TipoEstablecimientoRepository tipoEstablecimientoRepository) {
+    public EmpresaServiceImpl(EmpresaRepository empresaRepository, CategoriaRepository categoriaRepository, TipoEstablecimientoRepository tipoEstablecimientoRepository, UserRepository userRepository) {
         this.empresaRepository = empresaRepository;
         this.categoriaRepository = categoriaRepository;
         this.tipoEstablecimientoRepository = tipoEstablecimientoRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -91,5 +96,21 @@ public class EmpresaServiceImpl implements EmpresaService {
         return empresaRepository.findById(id);
     }
 
+    @Transactional
+    public void añadirPuntuacionEmpresa(Integer empresaId, String email, Integer puntuacion) {
+        Optional<Empresa> empresaOptional = empresaRepository.findById(empresaId);
+        if (empresaOptional.isPresent()) {
+            Empresa empresa = empresaOptional.get();
+            User user = userRepository.findByEmail(email);
+            if (user == null) {
+                throw new RuntimeException("Usuario no encontrado");
+            }
+            empresa.getUsuariosQueVotaron().add(user);
+            empresa.getPuntuaciones().put(user, puntuacion);
+            empresaRepository.save(empresa);
+        } else {
+            throw new RuntimeException("Empresa no encontrada");
+        }
+    }
 
 }

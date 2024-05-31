@@ -21,6 +21,6 @@ public interface EmpresaService {
     List<TipoEstablecimiento> listarTodosLosTipos();
     List<Empresa> buscarEmpresasPorCategoriasYTipo(List<Integer> categorias, Integer tipo);
     Optional<Empresa> findEmpresaById(Integer id);
-
+    void añadirPuntuacionEmpresa(Integer empresaId, String email, Integer puntuacion);
 
 }

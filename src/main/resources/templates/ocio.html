@@ -20,6 +20,76 @@
         .favorito {
             color: red; /* Color del corazón cuando es favorito */
         }
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .fa-heart {
+            color: white; /* Color del corazón cuando no es favorito */
+        }
+
+        .fa-heart {
+            color: white; /* Color del corazón cuando no es favorito */
+        }
+
+        .favorito {
+            color: red; /* Color del corazón cuando es favorito */
+        }
+
+        .fa-star {
+            cursor: pointer;
+            font-size: 1.2em; /* Tamaño de las estrellas */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .star {
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        .star.checked {
+            color: gold;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +133,21 @@
                             <h5 class="card-title" th:text="${empresa.nombre}">Nombre Empresa</h5>
                             <p class="card-text" th:text="${empresa.descripcion}">Descripción de la empresa</p>
                             <p class="card-text"><small class="text-muted" th:text="${empresa.direccion}">Dirección de la empresa</small></p>
+                            <!-- Mostrar media de votos -->
+<!--                            <p class="card-text"><strong>Media de votos: </strong><span th:text="${empresa.mediaVotos}">0.0</span></p>-->
+<!--                            &lt;!&ndash; Estrellas para la calificación &ndash;&gt;-->
+<!--                            <div class="star-rating" th:data-empresa-id="${empresa.id}">-->
+<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(1, ${empresa.id})'"></i>-->
+
+<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(2, ${empresa.id})'"></i>-->
+<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(3, ${empresa.id})'"></i>-->
+<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(4, ${empresa.id})'"></i>-->
+<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(5, ' + ${empresa.id} + ')'"></i>-->
+<!--                            </div>-->
+                            <!-- Botón "Puntuar" -->
+                            <button id="puntuar-btn">Puntuar</button>
+
+                            <!-- Botón para agregar a favoritos -->
                             <a href="#" th:attr="data-empresa-id=${empresa.id}" onclick="toggleFavorito(event, this)" class="btn btn-secondary my-2">
                                 <i class="fa fa-heart" aria-hidden="true"></i> <span id="favoritoText">Favorito</span>
                             </a>
@@ -97,9 +182,27 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para votar -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Puntúa la empresa</h2>
+        <div class="stars">
+            <i class="fa fa-star star" data-value="1"></i>
+            <i class="fa fa-star star" data-value="2"></i>
+            <i class="fa fa-star star" data-value="3"></i>
+            <i class="fa fa-star star" data-value="4"></i>
+            <i class="fa fa-star star" data-value="5"></i>
+        </div>
+        <button id="submit-rating">Enviar Puntuación</button>
+    </div>
+</div>
+
 <!-- Scripts necesarios para Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+
 <script>
     document.getElementById('provincia-input').addEventListener('input', function () {
         updateSuggestions(this.value.toLowerCase());
@@ -240,10 +343,63 @@
     document.addEventListener("DOMContentLoaded", function() {
         initializeFavoritos();
     });
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const modal = document.getElementById("myModal");
+        const btn = document.getElementById("puntuar-btn");
+        const span = document.getElementsByClassName("close")[0];
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
 
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = this.getAttribute('data-value');
+                stars.forEach(s => s.classList.remove('checked'));
+                this.classList.add('checked');
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add('checked');
+                }
+            });
+        });
+
+        document.getElementById('submit-rating').addEventListener('click', () => {
+            if (selectedRating > 0) {
+                fetch('/api/votos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ empresaId: 1, nota: selectedRating }),
+                    credentials: 'include'  // Añadir credenciales si es necesario
+                }).then(response => {
+                    if (response.ok) {
+                        alert('Puntuación enviada con éxito');
+                        modal.style.display = "none";
+                    } else {
+                        response.text().then(text => alert('Error: ' + text));
+                    }
+                });
+            } else {
+                alert('Por favor, selecciona una puntuación');
+            }
+        });
+    });
 
 </script>
-
 </body>
 </html>
+
+

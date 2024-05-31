@@ -13,7 +13,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "empresas")
@@ -37,15 +37,17 @@ public class Empresa {
     private String provincia;
 
 
-
     @Target({ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Constraint(validatedBy = ProvinciaValidator.class)
     public @interface ProvinciaValida {
         String message() default "La provincia no es válida";
+
         Class<?>[] groups() default {};
+
         Class<? extends Payload>[] payload() default {};
     }
+
     private String comunidad;
     private String poblacion;
 
@@ -54,9 +56,12 @@ public class Empresa {
     @Constraint(validatedBy = CodigoPostalValidator.class)
     public @interface CodigoPostalValido {
         String message() default "El código postal no es válido";
+
         Class<?>[] groups() default {};
+
         Class<? extends Payload>[] payload() default {};
     }
+
     @CodigoPostalValido
     private String codigoPostal;
 
@@ -70,8 +75,8 @@ public class Empresa {
     private String imagenBase64;
 
 
-
-    @ManyToMany(fetch = FetchType.EAGER)//especificacion de que Hibernate debe cargar la colección categorias junto con la entidad Empresa
+    @ManyToMany(fetch = FetchType.EAGER)
+//especificacion de que Hibernate debe cargar la colección categorias junto con la entidad Empresa
     @JoinTable(
             name = "empresa_categoria",
             joinColumns = @JoinColumn(name = "empresa_id"),
@@ -88,4 +93,13 @@ public class Empresa {
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<User> usuariosQueVotaron = new HashSet<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "votos", joinColumns = @JoinColumn(name = "empresa_id"))
+    @MapKeyJoinColumn(name = "user_id")
+    @Column(name = "puntuacion")
+    private Map<User, Integer> puntuaciones = new HashMap<>();
 }
