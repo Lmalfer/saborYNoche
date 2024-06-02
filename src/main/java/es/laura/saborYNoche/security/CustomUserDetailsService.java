@@ -42,7 +42,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private Collection<GrantedAuthority> getAuthorities(RoleEnum roleEnum) {
         if (roleEnum != null) {
-            // Aquí, asegúrate de acceder al nombre del enum para usarlo como ROLE_X
+            // Me aseguro de acceder al nombre del enum para usarlo como ROLE_X
             return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + roleEnum.name()));
         } else {
             return Collections.emptyList();

@@ -126,7 +126,7 @@
             <div class="row" id="empresas-container">
                 <!-- Iterar sobre las empresas y crear una tarjeta para cada una -->
                 <!-- Aquí se muestran las tarjetas de empresa -->
-                <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card">
+                <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card" th:id="'empresa-card-' + ${empresa.id}">
                     <div class="card">
                         <img th:if="${empresa.imagenBase64 != null}" th:src="'data:image/jpeg;base64,' + ${empresa.imagenBase64}" class="card-img-top" alt="Imagen de [[${empresa.nombre}]]">
                         <div class="card-body">
@@ -134,8 +134,11 @@
                             <p class="card-text" th:text="${empresa.descripcion}">Descripción de la empresa</p>
                             <p class="card-text"><small class="text-muted" th:text="${empresa.direccion}">Dirección de la empresa</small></p>
                             <!-- Mostrar media de votos -->
-<!--                            <p class="card-text"><strong>Media de votos: </strong><span th:text="${empresa.mediaVotos}">0.0</span></p>-->
-<!--                            &lt;!&ndash; Estrellas para la calificación &ndash;&gt;-->
+                            <div class="media-votos">
+                                Media de Votos: <span class="media"></span>
+                            </div>
+
+                            <!--                            &lt;!&ndash; Estrellas para la calificación &ndash;&gt;-->
 <!--                            <div class="star-rating" th:data-empresa-id="${empresa.id}">-->
 <!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(1, ${empresa.id})'"></i>-->
 
@@ -145,7 +148,7 @@
 <!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(5, ' + ${empresa.id} + ')'"></i>-->
 <!--                            </div>-->
                             <!-- Botón "Puntuar" -->
-                            <button id="puntuar-btn">Puntuar</button>
+                            <button class="puntuar-btn" th:attr="data-empresa-id=${empresa.id}">Puntuar</button>
 
                             <!-- Botón para agregar a favoritos -->
                             <a href="#" th:attr="data-empresa-id=${empresa.id}" onclick="toggleFavorito(event, this)" class="btn btn-secondary my-2">
@@ -187,18 +190,17 @@
 <div id="myModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Puntúa la empresa</h2>
-        <div class="stars">
-            <i class="fa fa-star star" data-value="1"></i>
-            <i class="fa fa-star star" data-value="2"></i>
-            <i class="fa fa-star star" data-value="3"></i>
-            <i class="fa fa-star star" data-value="4"></i>
-            <i class="fa fa-star star" data-value="5"></i>
+        <h2>Puntuar Empresa</h2>
+        <div class="star-rating">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
         </div>
         <button id="submit-rating">Enviar Puntuación</button>
     </div>
 </div>
-
 <!-- Scripts necesarios para Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
@@ -282,7 +284,6 @@
     }
 
     // Función para enviar una solicitud AJAX al servidor para agregar un favorito
-
     function toggleFavorito(event, element) {
         event.preventDefault();
         var empresaId = element.getAttribute('data-empresa-id');
@@ -343,27 +344,30 @@
     document.addEventListener("DOMContentLoaded", function() {
         initializeFavoritos();
     });
+
+    //puntuar
     document.addEventListener('DOMContentLoaded', (event) => {
         const modal = document.getElementById("myModal");
-        const btn = document.getElementById("puntuar-btn");
         const span = document.getElementsByClassName("close")[0];
         const stars = document.querySelectorAll('.star');
         let selectedRating = 0;
+        let selectedEmpresaId = null;
 
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-
+        // Cerrar el modal cuando se hace clic en el botón de cierre
         span.onclick = function() {
             modal.style.display = "none";
+            resetStars();
         }
 
+        // Cerrar el modal cuando se hace clic fuera de él
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
+                resetStars();
             }
         }
 
+        // Configurar los eventos de clic en las estrellas
         stars.forEach(star => {
             star.addEventListener('click', function() {
                 selectedRating = this.getAttribute('data-value');
@@ -375,19 +379,30 @@
             });
         });
 
+        // Configurar los eventos de clic en los botones de puntuar
+        document.querySelectorAll('.puntuar-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                selectedEmpresaId = this.getAttribute('data-empresa-id');
+                modal.style.display = "block";
+            });
+        });
+
+        // Enviar la puntuación cuando se hace clic en el botón de enviar
         document.getElementById('submit-rating').addEventListener('click', () => {
-            if (selectedRating > 0) {
+            if (selectedRating > 0 && selectedEmpresaId) {
                 fetch('/api/votos', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ empresaId: 1, nota: selectedRating }),
+                    body: JSON.stringify({ empresaId: selectedEmpresaId, nota: selectedRating }),
                     credentials: 'include'  // Añadir credenciales si es necesario
                 }).then(response => {
                     if (response.ok) {
                         alert('Puntuación enviada con éxito');
                         modal.style.display = "none";
+                        resetStars();
+                        obtenerEmpresasConMedias(); // Actualizar la media después de votar
                     } else {
                         response.text().then(text => alert('Error: ' + text));
                     }
@@ -396,10 +411,41 @@
                 alert('Por favor, selecciona una puntuación');
             }
         });
+
+        function resetStars() {
+            selectedRating = 0;
+            stars.forEach(star => star.classList.remove('checked'));
+        }
     });
+
+    // Función para calcular la media de votos y actualizar la tarjeta de empresa
+    $(document).ready(function() {
+        // Obtener las empresas con sus medias de votos al cargar la página
+        obtenerEmpresasConMedias();
+    });
+
+    function actualizarCardEmpresa(empresaId, mediaVotos) {
+        // Busca la tarjeta de empresa correspondiente al ID
+        var card = $('#empresa-card-' + empresaId);
+
+        // Actualiza la sección de "Media de Votos" dentro de la tarjeta encontrada
+        card.find('.media').text(mediaVotos.toFixed(1));
+    }
+
+    // Luego, dentro de tu función obtenerEmpresasConMedias(), llamas a esta función en lugar de append():
+    function obtenerEmpresasConMedias() {
+        $.get("/api/votos/media-votos")
+            .done(function(data) {
+                // Itera sobre las empresas y actualiza las cards con las medias de votos
+                data.forEach(function(empresa) {
+                    actualizarCardEmpresa(empresa.id, empresa.mediaVotos);
+                });
+            })
+            .fail(function(error) {
+                console.error("Error al obtener las empresas con medias de votos:", error);
+            });
+    }
 
 </script>
 </body>
 </html>
-
-

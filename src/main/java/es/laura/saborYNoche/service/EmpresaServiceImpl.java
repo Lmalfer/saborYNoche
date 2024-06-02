@@ -15,11 +15,14 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +34,8 @@ public class EmpresaServiceImpl implements EmpresaService {
     private final UserRepository userRepository;
 
 
-
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     @Autowired
     public EmpresaServiceImpl(EmpresaRepository empresaRepository, CategoriaRepository categoriaRepository, TipoEstablecimientoRepository tipoEstablecimientoRepository, UserRepository userRepository) {
         this.empresaRepository = empresaRepository;
@@ -91,7 +95,7 @@ public class EmpresaServiceImpl implements EmpresaService {
         return empresaRepository.buscarEmpresasPorCategoriasYTipo(categorias, tipo);
     }
 
-@Override
+    @Override
     public Optional<Empresa> findEmpresaById(Integer id) {
         return empresaRepository.findById(id);
     }
@@ -105,12 +109,34 @@ public class EmpresaServiceImpl implements EmpresaService {
             if (user == null) {
                 throw new RuntimeException("Usuario no encontrado");
             }
-            empresa.getUsuariosQueVotaron().add(user);
+//            empresa.getUsuariosQueVotaron().add(user);
             empresa.getPuntuaciones().put(user, puntuacion);
             empresaRepository.save(empresa);
         } else {
             throw new RuntimeException("Empresa no encontrada");
         }
     }
-
+//    public double calcularMediaVotos(Integer empresaId) {
+//        Optional<Empresa> empresaOptional = empresaRepository.findById(empresaId);
+//        if (empresaOptional.isPresent()) {
+//            Empresa empresa = empresaOptional.get();
+//            if (empresa.getPuntuaciones().isEmpty()) {
+//                return 0.0;
+//            }
+//            return empresa.getPuntuaciones().values().stream()
+//                    .mapToInt(Integer::intValue)
+//                    .average()
+//                    .orElse(0.0);
+//        } else {
+//            throw new RuntimeException("Empresa no encontrada");
+//        }
+//    }
+    public List<Map<String, Object>> obtenerMediasVotosPorEmpresa() {
+        String sql = "SELECT v.empresa_id, AVG(v.puntuacion) AS media_votos " +
+                "FROM (SELECT empresa_id, SUM(puntuacion) AS puntuacion " +
+                "FROM votos " +
+                "GROUP BY empresa_id, user_id) v " +
+                "GROUP BY v.empresa_id";
+        return jdbcTemplate.queryForList(sql);
+    }
 }

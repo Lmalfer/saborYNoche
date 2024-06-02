@@ -94,8 +94,8 @@ public class Empresa {
     private User user;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<User> usuariosQueVotaron = new HashSet<>();
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    private Set<User> usuariosQueVotaron = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "votos", joinColumns = @JoinColumn(name = "empresa_id"))
