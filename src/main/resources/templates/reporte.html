@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Empresa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="container mt-4">
+    <h1>Nombre Empresa</h1>
+    <h2>Media de Votos: <span></span></h2>
+    <h2>Usuarios que han marcado como favorito</h2>
+    <ul id="usuariosFavoritos"></ul>
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="votosChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="favoritosChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Datos de ejemplo para los gráficos
+    const puntuaciones = [3, 5, 2, 4];
+    const labels = ["A", "B", "C", "D"];
+    const totalUsuarios = 100;
+    const usuariosFavoritosSize = 50;
+
+    // URL del reporte
+    const urlReporte = "/reporte/1"; // Aquí deberías reemplazar '1' con el ID real de la empresa
+
+    // Mostrar datos en el HTML
+    document.querySelector('h1').textContent = "Nombre de la Empresa";
+    document.querySelector('h2 span').textContent = "7"; // Reemplaza con la media de votos real
+    const usuariosFavoritosList = document.getElementById('usuariosFavoritos');
+    ["usuario1@example.com", "usuario2@example.com", "usuario3@example.com"].forEach(email => {
+        const li = document.createElement('li');
+        li.textContent = email;
+        usuariosFavoritosList.appendChild(li);
+    });
+
+    // Gráfico de barras
+    const votosCtx = document.getElementById('votosChart').getContext('2d');
+    new Chart(votosCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Puntuaciones',
+                data: puntuaciones,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Gráfico de pastel
+    const favoritosCtx = document.getElementById('favoritosChart').getContext('2d');
+    new Chart(favoritosCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Favoritos', 'No Favoritos'],
+            datasets: [{
+                data: [usuariosFavoritosSize, totalUsuarios - usuariosFavoritosSize],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        }
+    });
+
+    // Redireccionar al reporte
+    function redirectToReport() {
+        window.location.href = urlReporte;
+    }
+
+    // Ejecutar la redirección al cargar la página
+    document.addEventListener('DOMContentLoaded', redirectToReport);
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -18,10 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -29,7 +26,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserRepository userRepository;
+    private EmpresaService empresaService;
     @Autowired
     private EmpresaRepository empresaRepository;
     private final PasswordEncoder passwordEncoder;
@@ -49,6 +46,17 @@ public class UserController {
         return "datosPersonales";
     }
 
+    @GetMapping("/datosPersonalesEmpresario")
+    public String datosPersonalesEmpresario(Model model, HttpServletRequest request) {
+        // Obtiene el usuario actual autenticado
+        User usuario = userService.getUsuarioActual();
+        model.addAttribute("usuario", usuario);
+        // Guarda la URL de referencia en el modelo
+        String referer = request.getHeader("Referer");
+        model.addAttribute("referer", referer != null ? referer : "/defaultPage");
+        return "datosPersonalesEmpresario";
+    }
+
     @GetMapping("/perfil")
     public String perfil(Model model) {
         User usuario = userService.getUsuarioActual();
@@ -56,7 +64,13 @@ public class UserController {
         model.addAttribute("usuario", usuario);
         return "perfil";
     }
+    @GetMapping("/perfilEmpresario")
+    public String perfilEmpresario(Model model) {
+        User usuario = userService.getUsuarioActual();
 
+        model.addAttribute("usuario", usuario);
+        return "perfilEmpresario";
+    }
     @PostMapping("/datosPersonales")
     public String actualizarDatosPersonales(@ModelAttribute("usuario") User usuario,
                                             @RequestParam("currentPassword") String currentPassword,
@@ -91,6 +105,39 @@ public class UserController {
         }
     }
 
+    @PostMapping("/datosPersonalesEmpresario")
+    public String actualizarDatosPersonalesEmpresario(@ModelAttribute("usuario") User usuario,
+                                                      @RequestParam("currentPassword") String currentPassword,
+                                                      @RequestParam("newPassword") String newPassword,
+                                                      @RequestParam("referer") String referer,
+                                                      Model model) {
+        User usuarioActual = null;
+        try {
+            usuarioActual = userService.getUsuarioActual();
+            usuarioActual.setName(usuario.getName());
+
+            // Cambiar la contraseña si se proporciona una nueva
+            if (currentPassword != null && !currentPassword.isEmpty() && newPassword != null && !newPassword.isEmpty()) {
+                if (passwordEncoder.matches(currentPassword, usuarioActual.getPassword())) {
+                    usuarioActual.setPassword(passwordEncoder.encode(newPassword));
+                } else {
+                    model.addAttribute("errorMessage", "La contraseña actual es incorrecta.");
+                    model.addAttribute("referer", referer);
+                    return "datosPersonalesEmpresario";
+                }
+            }
+
+            userService.updateUser(usuarioActual);
+            model.addAttribute("usuario", usuarioActual);
+            model.addAttribute("successMessage", "Los datos personales se han actualizado correctamente.");
+            return "redirect:" + referer;
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "Ha ocurrido un error al actualizar los datos personales.");
+            model.addAttribute("usuario", usuarioActual);
+            return "datosPersonalesEmpresario"; // Redirige a la página de datos personales con un mensaje de error
+        }
+    }
 
     @PostMapping("/favoritos/agregar/{empresaId}")
     public ResponseEntity<String> agregarFavorito(@PathVariable Integer empresaId, @AuthenticationPrincipal UserDetails userDetails) {
@@ -124,14 +171,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado");
         }
 
-        Optional<Empresa> empresaOpt = empresaRepository.findById(empresaId);
-        if (empresaOpt.isPresent()) {
-            Empresa empresa = empresaOpt.get();
-            userService.eliminarFavorito(currentUser, empresa);
-            return ResponseEntity.ok("Se ha eliminado de favoritos");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empresa no encontrada");
-        }
+        userService.eliminarFavorito(currentUser, empresaId);
+        return ResponseEntity.ok("Se ha eliminado de favoritos");
     }
 
     // Método para listar favoritos
@@ -147,6 +188,13 @@ public class UserController {
         model.addAttribute("favoritos", favoritos);
 
         return "favoritos";
+    }
+
+    @GetMapping("/empresa/{id}")
+    public String getEmpresaDetalle(@PathVariable Integer id, Model model) {
+        Empresa empresa = empresaService.getEmpresaById(id);
+        model.addAttribute("empresa", empresa);
+        return "empresa-detalle";
     }
 
 }

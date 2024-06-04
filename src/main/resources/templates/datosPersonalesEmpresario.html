@@ -19,15 +19,43 @@
 </head>
 <body>
 <div class="container">
-    <div th:if="${not #authorization.expression('isAuthenticated()')}" th:include="~{fragments/header-non-registered}"></div>
-    <div th:if="${#authorization.expression('isAuthenticated()')}" th:include="~{fragments/header-registered}"></div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/empresarios">Sabor y Noche</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="/empresarios">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/adminEmpresa">Administración</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Perfil
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/perfilEmpresario">Datos Personales</a>
+                            <div class="dropdown-divider"></div>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="card card-custom">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h1 class="h5">Perfil Usuario</h1>
             <button type="button" class="btn-close" aria-label="Close" onclick="redirectToPreviousPage()"></button>
         </div>
         <div class="card-body">
-            <form th:action="@{/datosPersonales}" method="post">
+            <form th:action="@{/datosPersonalesEmpresario}" method="post">
                 <h2 class="h5">Cambiar Nombre</h2>
 
                 <div class="mb-3">
@@ -52,7 +80,6 @@
                 </div>
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">Actualizar</button>
-                    <button type="button" class="btn btn-secondary" onclick="redirectToPreviousPage()">Cancelar</button>
                 </div>
             </form>
         </div>

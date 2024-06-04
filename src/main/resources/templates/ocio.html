@@ -13,20 +13,6 @@
             max-height: 200px;
             overflow-y: auto;
         }
-         .fa-heart {
-             color: white; /* Color del corazón cuando no es favorito */
-         }
-
-        .favorito {
-            color: red; /* Color del corazón cuando es favorito */
-        }
-        .dropdown-menu {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .fa-heart {
-            color: white; /* Color del corazón cuando no es favorito */
-        }
 
         .fa-heart {
             color: white; /* Color del corazón cuando no es favorito */
@@ -40,6 +26,7 @@
             cursor: pointer;
             font-size: 1.2em; /* Tamaño de las estrellas */
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -90,6 +77,24 @@
         .star.checked {
             color: gold;
         }
+
+        .input-group .dropdown-filter {
+            position: relative;
+            z-index: 10;
+        }
+
+        .empresa-card {
+            margin: 0 auto;
+        }
+
+        .form-control.provincia,
+        .form-control.poblacion {
+            width: 100px;
+        }
+
+        .form-control.busqueda {
+            flex-grow: 1;
+        }
     </style>
 </head>
 <body>
@@ -99,93 +104,86 @@
 <div class="container mt-4">
     <form method="get" action="/ocio/empresas">
         <div class="row mb-4">
-            <div class="col-md-6 position-relative">
+            <div class="col-md-12">
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                    <input type="text" class="form-control" id="provincia-input" name="provincia" placeholder="Provincia" autocomplete="off">
-                    <input type="text" class="form-control" id="poblacion-input" name="poblacion" placeholder="Población" autocomplete="off">
+                    <input type="text" class="form-control provincia" id="provincia-input" name="provincia" placeholder="Provincia" autocomplete="off">
+                    <input type="text" class="form-control poblacion" id="poblacion-input" name="poblacion" placeholder="Población" autocomplete="off">
                     <button class="btn btn-secondary" type="button" onclick="clearLocationInput()">X</button>
-                </div>
-                <div class="dropdown-menu w-100" id="location-suggestions" style="display: none;">
-                    <div class="p-2">Sugerencias</div>
-                    <!-- Aquí se muestran las sugerencias de ubicación -->
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="search-input" name="busqueda" placeholder="Tipo de cocina, nombre del restaurante o dirección">
+                    <input type="text" class="form-control busqueda" id="search-input" name="busqueda" placeholder="Nombre o dirección">
                     <button class="btn btn-primary" type="submit">BÚSQUEDA</button>
+
+                    <div class="dropdown-filter">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-funnel"></i> Filtros
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="filterDropdown">
+                            <h5>Filtros populares</h5>
+                            <ul class="list-unstyled">
+                                <li th:each="categoria : ${categorias}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="categoria-${categoria.id}" name="categorias" value="${categoria.id}" data-categoria-id="${categoria.id}">
+                                        <label class="form-check-label" for="categoria-${categoria.id}" th:text="${categoria.nombre}">Categoría</label>
+                                    </div>
+                                </li>
+                            </ul>
+                            <h5>Tipos de establecimiento</h5>
+                            <ul class="list-unstyled">
+                                <li th:each="tipo : ${tiposEstablecimiento}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="tipo-${tipo.id}" name="tipos" value="${tipo.id}" data-tipo-id="${tipo.id}">
+                                        <label class="form-check-label" for="tipo-${tipo.id}" th:text="${tipo.nombre}">Tipo de Establecimiento</label>
+                                    </div>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary w-100" onclick="capturarFiltros()">Filtrar</button>
+                            <input type="hidden" id="categoriasSeleccionadas" name="categorias">
+                            <input type="hidden" id="tiposSeleccionados" name="tipos">
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </form>
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <h1 class="text-center">Empresas</h1>
-            <div class="row" id="empresas-container">
+            <div class="row justify-content-center" id="empresas-container">
                 <!-- Iterar sobre las empresas y crear una tarjeta para cada una -->
                 <!-- Aquí se muestran las tarjetas de empresa -->
                 <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card" th:id="'empresa-card-' + ${empresa.id}">
                     <div class="card">
-                        <img th:if="${empresa.imagenBase64 != null}" th:src="'data:image/jpeg;base64,' + ${empresa.imagenBase64}" class="card-img-top" alt="Imagen de [[${empresa.nombre}]]">
+                        <a th:href="@{/empresa/{id}(id=${empresa.id})}">
+                            <img th:if="${empresa.imagenBase64 != null}" th:src="'data:image/jpeg;base64,' + ${empresa.imagenBase64}" class="card-img-top" alt="Imagen de [[${empresa.nombre}]]">
+                        </a>
                         <div class="card-body">
                             <h5 class="card-title" th:text="${empresa.nombre}">Nombre Empresa</h5>
                             <p class="card-text" th:text="${empresa.descripcion}">Descripción de la empresa</p>
                             <p class="card-text"><small class="text-muted" th:text="${empresa.direccion}">Dirección de la empresa</small></p>
                             <!-- Mostrar media de votos -->
+                            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
                             <div class="media-votos">
                                 Media de Votos: <span class="media"></span>
                             </div>
-
-                            <!--                            &lt;!&ndash; Estrellas para la calificación &ndash;&gt;-->
-<!--                            <div class="star-rating" th:data-empresa-id="${empresa.id}">-->
-<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(1, ${empresa.id})'"></i>-->
-
-<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(2, ${empresa.id})'"></i>-->
-<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(3, ${empresa.id})'"></i>-->
-<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(4, ${empresa.id})'"></i>-->
-<!--                                <i class="fa fa-star" aria-hidden="true" th:onclick="'rateStar(5, ' + ${empresa.id} + ')'"></i>-->
-<!--                            </div>-->
+                            </th:block>
                             <!-- Botón "Puntuar" -->
-                            <button class="puntuar-btn" th:attr="data-empresa-id=${empresa.id}">Puntuar</button>
-
+                            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                                <button class="puntuar-btn" th:attr="data-empresa-id=${empresa.id}">Puntuar</button>
+                            </th:block>
                             <!-- Botón para agregar a favoritos -->
-                            <a href="#" th:attr="data-empresa-id=${empresa.id}" onclick="toggleFavorito(event, this)" class="btn btn-secondary my-2">
-                                <i class="fa fa-heart" aria-hidden="true"></i> <span id="favoritoText">Favorito</span>
-                            </a>
+                            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                                <a href="#" th:attr="data-empresa-id=${empresa.id}" onclick="toggleFavorito(event, this)" class="btn btn-secondary my-2">
+                                    <i class="fa fa-heart" aria-hidden="true"></i> <span id="favoritoText">Favorito</span>
+                                </a>
+                            </th:block>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <h4>Filtrar por:</h4>
-            <h5>Filtros populares</h5>
-            <ul class="list-unstyled">
-                <li th:each="categoria : ${categorias}">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="categoria-[[${categoria.id}]]" name="categorias" value="[[${categoria.id}]]">
-                        <label class="form-check-label" for="categoria-[[${categoria.id}]]" th:text="${categoria.nombre}">Categoría</label>
-                    </div>
-                </li>
-            </ul>
-            <h5>Tipos de establecimiento</h5>
-            <ul class="list-unstyled">
-                <li th:each="tipo : ${tiposEstablecimiento}">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tipo-[[${tipo.id}]]" name="tipos" value="[[${tipo.id}]]">
-                        <label class="form-check-label" for="tipo-[[${tipo.id}]]" th:text="${tipo.nombre}">Tipo de Establecimiento</label>
-                    </div>
-                </li>
-            </ul>
-            <button class="btn btn-primary" onclick="capturarFiltros()">Filtrar</button> <!-- Agregar el evento onclick -->
-            <input type="hidden" id="categoriasSeleccionadas" name="categorias"> <!-- Corregir el nombre del input -->
-            <input type="hidden" id="tiposSeleccionados" name="tipos"> <!-- Corregir el nombre del input -->
-        </div>
     </div>
 </div>
-
 <!-- Modal para votar -->
 <div id="myModal" class="modal">
     <div class="modal-content">
@@ -202,7 +200,7 @@
     </div>
 </div>
 <!-- Scripts necesarios para Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 
 <script>
@@ -243,24 +241,18 @@
         document.getElementById('location-suggestions').style.display = 'none';
     }
 
-    function clearLocationInput() {
-        document.getElementById('provincia-input').value = '';
-        document.getElementById('poblacion-input').value = '';
-        document.getElementById('location-suggestions').style.display = 'none';
-    }
-
     function capturarFiltros() {
         var categoriasSeleccionadas = [];
         var tiposSeleccionados = [];
 
         // Capturar las categorías seleccionadas
         document.querySelectorAll('input[name="categorias"]:checked').forEach(function (checkbox) {
-            categoriasSeleccionadas.push(checkbox.value);
+            categoriasSeleccionadas.push(checkbox.getAttribute('data-categoria-id'));
         });
 
         // Capturar los tipos de establecimiento seleccionados
         document.querySelectorAll('input[name="tipos"]:checked').forEach(function (checkbox) {
-            tiposSeleccionados.push(checkbox.value);
+            tiposSeleccionados.push(checkbox.getAttribute('data-tipo-id'));
         });
 
         // Construir la URL con los parámetros de categoría y tipo
@@ -270,14 +262,14 @@
         url += 'busqueda=' + encodeURIComponent(document.getElementById('search-input').value);
 
         // Agregar categorías seleccionadas a la URL
-        categoriasSeleccionadas.forEach(function (categoria) {
-            url += '&categorias=' + categoria;
-        });
+        if (categoriasSeleccionadas.length > 0) {
+            url += '&categorias=' + categoriasSeleccionadas.join(',');
+        }
 
         // Agregar tipos seleccionados a la URL
-        tiposSeleccionados.forEach(function (tipo) {
-            url += '&tipos=' + tipo;
-        });
+        if (tiposSeleccionados.length > 0) {
+            url += '&tipo=' + tiposSeleccionados[0]; // Solo se puede seleccionar un tipo
+        }
 
         // Redirigir a la URL construida
         window.location.href = url;
@@ -309,12 +301,16 @@
 
                 // Actualizar el estado en el almacenamiento local
                 updateLocalStorage(empresaId, !isFavorito);
+
+                // Recargar la página después de actualizar los favoritos
+                location.reload();
             } else {
                 alert('Error al actualizar favorito');
             }
         };
         xhr.send();
     }
+
 
     function updateLocalStorage(empresaId, isFavorito) {
         var favoritos = JSON.parse(localStorage.getItem('favoritos')) || {};

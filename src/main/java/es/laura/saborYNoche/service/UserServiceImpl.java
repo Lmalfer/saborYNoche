@@ -50,7 +50,9 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
-
+    public boolean isValidPassword(String password) {
+        return password!= null && password.length() >= 6;
+    }
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -101,11 +103,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
-    @Override
-    @Transactional
-    public boolean isFavorito(User usuario, Empresa empresa) {
-        return usuario.getEmpresas().contains(empresa);
-    }
+//    @Override
+//    @Transactional
+//    public boolean isFavorito(User usuario, Empresa empresa) {
+//        return usuario.getEmpresas().contains(empresa);
+//    }
 
     @Override
     @Transactional
@@ -116,13 +118,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void eliminarFavorito(User usuario, Empresa empresa) {
-        usuario.getEmpresas().remove(empresa);
-        userRepository.save(usuario);
-        userRepository.removeFavorite(usuario.getId(), empresa);
+    public void eliminarFavorito(User usuario, Integer empresaId) {
+        Empresa empresa = empresaRepository.findById(empresaId).orElse(null);
+        if (empresa!= null) {
+            usuario.getEmpresas().removeIf(e -> e.getId().equals(empresaId));
+            userRepository.save(usuario);
+        } else {
+            throw new RuntimeException("La empresa con ID " + empresaId + " no se encontró en la base de datos.");
+        }
     }
-
-
 }
 
 

@@ -6,6 +6,7 @@ import es.laura.saborYNoche.model.User;
 import es.laura.saborYNoche.enums.RoleEnum;
 import es.laura.saborYNoche.service.RoleService;
 import es.laura.saborYNoche.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,15 +59,22 @@ public class AuthController {
     }
 
     @PostMapping("/register/save")
-    public String registration(@ModelAttribute("user") UserDto userDto,
+    public String registration(@ModelAttribute("user") @Valid UserDto userDto,
                                BindingResult result) {
-        User existingUser = userService.findUserByEmail(userDto.getEmail());
-
-        if (existingUser != null) {
-            result.rejectValue("email", null, "There is already an account registered with the same email");
+        if (result.hasErrors()) {
+            return "register";
         }
 
-        if (result.hasErrors()) {
+        // Verificar si el usuario ya existe
+        User existingUser = userService.findUserByEmail(userDto.getEmail());
+        if (existingUser!= null) {
+            result.rejectValue("email", null, "Ya hay una cuenta registrada con ese correo");
+            return "register";
+        }
+
+        // Verificar si la contraseña es válida
+        if (!userService.isValidPassword(userDto.getPassword())) {
+            result.rejectValue("password", null, "La contraseña debe tener 6 caracteres");
             return "register";
         }
 

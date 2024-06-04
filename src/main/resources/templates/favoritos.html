@@ -56,8 +56,8 @@
                 if (xhr.status === 200) {
                     console.log('Empresa eliminada de favoritos');
                     // Eliminar la empresa de la lista de favoritos en la página
-                    var empresaElement = document.getElementById('empresa-' + empresaId);
-                    empresaElement.remove();
+                    var empresaElement = linkElement.closest('.col-md-4'); // Get the parent element of the link
+                    empresaElement.remove(); // Remove the element from the DOM
                 } else {
                     console.error('Error al eliminar favorito:', xhr.responseText);
                 }
@@ -65,10 +65,7 @@
         };
         xhr.send();
     }
-
-
 </script>
-
 
 </body>
 </html>

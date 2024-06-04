@@ -50,15 +50,19 @@ public class SpringSecurity {
                                 .requestMatchers("/nuevaEmpresa/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/editarEmpresa/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/adminEmpresa/**").hasRole("EMPRESARIO")
+                                .requestMatchers("/perfilEmpresario/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/ocio/**").permitAll()
                                 .requestMatchers("/datosPersonales").authenticated()
+                                .requestMatchers("/datosPersonalesEmpresario").hasRole("EMPRESARIO")
                                 .requestMatchers("/images/**").permitAll()
+                                .requestMatchers("/iconos/**").permitAll()
                                 .requestMatchers("/favorito/**").permitAll()
                                 .requestMatchers("/perfil").authenticated()
                                 .requestMatchers("/api/votos/**").authenticated()
                                 .requestMatchers("/votaciones/**").authenticated()
-
-
+                                .requestMatchers("/empresa/**").permitAll()
+                                .requestMatchers("/api/empresas/**").permitAll()
+                                .requestMatchers("/reporte/**").permitAll()
                 )
                 .formLogin(
                         form -> form

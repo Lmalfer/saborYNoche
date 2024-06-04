@@ -54,5 +54,4 @@ public class VotacionController {
 
         return ResponseEntity.ok(empresasConMedias);
     }
-
 }

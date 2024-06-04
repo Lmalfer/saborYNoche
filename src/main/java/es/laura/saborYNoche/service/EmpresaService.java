@@ -23,4 +23,5 @@ public interface EmpresaService {
 //    List<EmpresaResponse> obtenerTodasLasEmpresasConMedias();
 //    double calcularMediaVotos(Integer empresaId);
     List<Map<String, Object>> obtenerMediasVotosPorEmpresa();
+    Empresa getEmpresaById(Integer id);
 }

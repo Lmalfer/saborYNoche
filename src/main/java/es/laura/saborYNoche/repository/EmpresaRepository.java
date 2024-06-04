@@ -24,9 +24,13 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
             @Param("poblacion") String poblacion,
             @Param("busqueda") String busqueda);
 
-    @Query("SELECT e FROM Empresa e JOIN e.categorias c WHERE c.id IN :categorias AND e.tipoEstablecimiento.id = :tipo")
-    List<Empresa> buscarEmpresasPorCategoriasYTipo(
-            @Param("categorias") List<Integer> categorias,
-            @Param("tipo") Integer tipo);
+    @Query("SELECT e FROM Empresa e JOIN e.categorias c WHERE c.id IN :categorias")
+    List<Empresa> buscarEmpresasPorCategorias(@Param("categorias") List<Integer> categorias);
 
-}
+    @Query("SELECT e FROM Empresa e WHERE e.tipoEstablecimiento.id = :tipo")
+    List<Empresa> buscarEmpresasPorTipo(@Param("tipo") Integer tipo);
+
+    @Query("SELECT e FROM Empresa e JOIN e.categorias c WHERE c.id IN :categorias AND e.tipoEstablecimiento.id = :tipo")
+    List<Empresa> buscarEmpresasPorCategoriasYTipo(@Param("categorias") List<Integer> categorias, @Param("tipo") Integer tipo);
+    }
+
