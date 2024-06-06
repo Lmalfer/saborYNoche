@@ -34,6 +34,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+
         }
 
         .card:hover {
@@ -51,6 +52,12 @@
 
         .card-title {
             margin-bottom: 0;
+        }
+        .jumbotron {
+            background-color: peachpuff ;
+            background-size: cover;
+            color: white;
+            text-shadow: 2px 2px 4px #000000;
         }
 
         .list-group-item {
@@ -81,7 +88,7 @@
                     <a class="nav-link active" aria-current="page" href="#">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/adminEmpresa">Administración</a>
+                    <a class="nav-link" href="/adminEmpresa">Panel de Administración</a>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -91,10 +98,10 @@
                         Perfil
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="/perfilEmpresario">Datos Personales</a></li>
+                        <li><a class="dropdown-item" th:href="@{/perfilEmpresario}">Datos Personales</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form action="/logout" method="post">
+                            <form th:action="@{/logout}" method="post">
                                 <button type="submit" class="dropdown-item">Cerrar Sesión</button>
                             </form>
                         </li>
@@ -104,45 +111,52 @@
         </div>
     </div>
 </nav>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4 text-center">¡Bienvenido a Sabor y Noche!</h1>
+        <p class="lead text-center">Descubre los mejores restaurantes, bares y locales de ocio cerca de ti.</p>
+    </div>
+</div>
 
-<!-- Page Content -->
-<div class="container py-5">
+<div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <h2 class="text-center">¿Qué te apetece hoy?</h2>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Resumen</h5>
-                </div>
+                <img src="/images/restaurantes.jpg" class="card-img-top" alt="Restaurantes">
                 <div class="card-body">
-                    <p class="card-text">Aquí puedes ver un resumen de tu actividad empresarial, como estadísticas
-                        clave, información sobre tus establecimientos, etc.</p>
+                    <h5 class="card-title">Restaurantes</h5>
+                    <p class="card-text">Descubre una amplia selección de restaurantes con cocina de autor, tradicional, internacional y mucho más.</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Últimas Notificaciones</h5>
+                <img src="/images/bares.jpg" class="card-img-top" alt="Bares">
+                <div class="card-body">
+                    <h5 class="card-title">Bares</h5>
+                    <p class="card-text">Encuentra los mejores bares para disfrutar de una copa, un cóctel o una cerveza con amigos.</p>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Notificación 1</li>
-                    <li class="list-group-item">Notificación 2</li>
-                    <li class="list-group-item">Notificación 3</li>
-                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <img src="/images/ocioNocturno.jpg" class="card-img-top" alt="Ocio nocturno">
+                <div class="card-body">
+                    <h5 class="card-title">Ocio nocturno</h5>
+                    <p class="card-text">Explora la vida nocturna de tu ciudad con discotecas, pubs y locales de entretenimiento.</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="container text-center">
-        <span>&copy; 2024 Sabor y Noche. Todos los derechos reservados.</span>
-    </div>
-</footer>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>
+

@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Controller
 @RequestMapping("/adminEmpresa")
@@ -55,7 +58,23 @@ public class EmpresaController {
         return new ModelAndView("adminEmpresa")
                 .addObject("empresas", empresas);
     }
+    @GetMapping("/establecimientos/tipo/restaurantes")
+    public ModelAndView listarRestaurantes() {
+        List<Empresa> empresas = empresaService.listarRestaurantes();
+        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
+    }
 
+    @GetMapping("/establecimientos/tipo/bares")
+    public ModelAndView listarBares() {
+        List<Empresa> empresas = empresaService.listarBares();
+        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
+    }
+
+    @GetMapping("/establecimientos/tipo/discotecas")
+    public ModelAndView listarDiscotecas() {
+        List<Empresa> empresas = empresaService.listarDiscotecas();
+        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
+    }
     // Mostrar formulario de nueva empresa
     @GetMapping("/nuevaEmpresa")
     public ModelAndView mostrarFormularioDeNuevaEmpresa() {
@@ -99,10 +118,10 @@ public class EmpresaController {
         String email = authentication.getName();
         User user = userService.findUserByEmail(email);
         empresa.setUser(user);
+        empresa.setFechaPublicacion(LocalDateTime.now()); // Establecer automáticamente la fecha de publicación
         empresaService.guardarEmpresa(empresa);
         return new ModelAndView("redirect:/adminEmpresa");
     }
-
     // Mostrar formulario de editar empresa
     @GetMapping("/{id}/editarEmpresa")
     public ModelAndView mostrarFormularioDeEditarEmpresa(@PathVariable Integer id) {
@@ -182,5 +201,29 @@ public class EmpresaController {
         empresaService.eliminarEmpresa(id);
         return "redirect:/adminEmpresa";
     }
-    
+    @GetMapping("/reporte")
+    public ModelAndView generarReporte() {
+        List<User> empresarios = userService.findAllEmpresarios();
+        List<Map<String, Object>> reporteData = new ArrayList<>();
+
+        for (User user : empresarios) {
+            Map<String, Object> reporte = new HashMap<>();
+
+            Map<User, Long> numeroDeLocales = empresaService.obtenerNumeroDeLocalesPorEmpresario(user, Pageable.unpaged());
+            List<Empresa> localesUltimoMes = empresaService.obtenerLocalesPublicadosUltimoMes(user, Pageable.unpaged());
+            Map<Integer, Double> mediasVotos = empresaService.obtenerMediasVotosPorLocal(user, Pageable.unpaged());
+
+            reporte.put("empresario", user);
+            reporte.put("numeroDeLocales", numeroDeLocales);
+            reporte.put("localesUltimoMes", localesUltimoMes);
+            reporte.put("mediasVotos", mediasVotos);
+
+            reporteData.add(reporte);
+        }
+
+        ModelAndView mav = new ModelAndView("reporte");
+        mav.addObject("reporteData", reporteData);
+        return mav;
+    }
+
 }

@@ -72,22 +72,44 @@ public class UserController {
         return "perfilEmpresario";
     }
     @PostMapping("/datosPersonales")
-    public String actualizarDatosPersonales(@ModelAttribute("usuario") User usuario,
-                                            @RequestParam("currentPassword") String currentPassword,
-                                            @RequestParam("newPassword") String newPassword,
-                                            @RequestParam("referer") String referer,
-                                            Model model) {
+    public String actualizarDatosPersonales(
+            @ModelAttribute("usuario") User usuario,
+            @RequestParam("currentPassword") String currentPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("referer") String referer,
+            Model model) {
+        User usuarioActual = null;
         try {
-            User usuarioActual = userService.getUsuarioActual();
-            usuarioActual.setName(usuario.getName());
+            usuarioActual = userService.getUsuarioActual();
+            boolean isNameChanged = !usuarioActual.getName().equals(usuario.getName());
+            boolean isPasswordChanged = currentPassword != null && !currentPassword.isEmpty() && newPassword != null && !newPassword.isEmpty();
 
-            // Cambiar la contraseña si se proporciona una nueva
-            if (currentPassword != null && !currentPassword.isEmpty() && newPassword != null && !newPassword.isEmpty()) {
+            // Validar nueva contraseña
+            if (newPassword != null && !newPassword.isEmpty() && newPassword.length() < 6) {
+                model.addAttribute("errorMessage", "La nueva contraseña debe tener al menos 6 caracteres.");
+                model.addAttribute("referer", referer);
+                model.addAttribute("usuario", usuarioActual);
+                return "datosPersonales";
+            }
+
+            if (!isNameChanged && !isPasswordChanged) {
+                model.addAttribute("infoMessage", "No has realizado ningún cambio.");
+                model.addAttribute("referer", referer);
+                model.addAttribute("usuario", usuarioActual);
+                return "datosPersonales";
+            }
+
+            if (isNameChanged) {
+                usuarioActual.setName(usuario.getName());
+            }
+
+            if (isPasswordChanged) {
                 if (passwordEncoder.matches(currentPassword, usuarioActual.getPassword())) {
                     usuarioActual.setPassword(passwordEncoder.encode(newPassword));
                 } else {
                     model.addAttribute("errorMessage", "La contraseña actual es incorrecta.");
                     model.addAttribute("referer", referer);
+                    model.addAttribute("usuario", usuarioActual);
                     return "datosPersonales";
                 }
             }
@@ -101,6 +123,7 @@ public class UserController {
             e.printStackTrace();
             model.addAttribute("errorMessage", "Ha ocurrido un error al actualizar los datos personales.");
             model.addAttribute("referer", referer);
+            model.addAttribute("usuario", usuarioActual);
             return "datosPersonales"; // Redirige a la página de datos personales con un mensaje de error
         }
     }
@@ -114,15 +137,35 @@ public class UserController {
         User usuarioActual = null;
         try {
             usuarioActual = userService.getUsuarioActual();
-            usuarioActual.setName(usuario.getName());
+            boolean isNameChanged = !usuarioActual.getName().equals(usuario.getName());
+            boolean isPasswordChanged = currentPassword != null && !currentPassword.isEmpty() && newPassword != null && !newPassword.isEmpty();
 
-            // Cambiar la contraseña si se proporciona una nueva
-            if (currentPassword != null && !currentPassword.isEmpty() && newPassword != null && !newPassword.isEmpty()) {
+            // Validar nueva contraseña
+            if (newPassword != null && !newPassword.isEmpty() && newPassword.length() < 6) {
+                model.addAttribute("errorMessage", "La nueva contraseña debe tener al menos 6 caracteres.");
+                model.addAttribute("referer", referer);
+                model.addAttribute("usuario", usuarioActual);
+                return "datosPersonalesEmpresario";
+            }
+
+            if (!isNameChanged && !isPasswordChanged) {
+                model.addAttribute("infoMessage", "No has realizado ningún cambio.");
+                model.addAttribute("referer", referer);
+                model.addAttribute("usuario", usuarioActual);
+                return "datosPersonalesEmpresario";
+            }
+
+            if (isNameChanged) {
+                usuarioActual.setName(usuario.getName());
+            }
+
+            if (isPasswordChanged) {
                 if (passwordEncoder.matches(currentPassword, usuarioActual.getPassword())) {
                     usuarioActual.setPassword(passwordEncoder.encode(newPassword));
                 } else {
                     model.addAttribute("errorMessage", "La contraseña actual es incorrecta.");
                     model.addAttribute("referer", referer);
+                    model.addAttribute("usuario", usuarioActual);
                     return "datosPersonalesEmpresario";
                 }
             }
@@ -130,10 +173,12 @@ public class UserController {
             userService.updateUser(usuarioActual);
             model.addAttribute("usuario", usuarioActual);
             model.addAttribute("successMessage", "Los datos personales se han actualizado correctamente.");
+            // Redirige a la URL de referencia guardada en el modelo
             return "redirect:" + referer;
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "Ha ocurrido un error al actualizar los datos personales.");
+            model.addAttribute("referer", referer);
             model.addAttribute("usuario", usuarioActual);
             return "datosPersonalesEmpresario"; // Redirige a la página de datos personales con un mensaje de error
         }
@@ -190,6 +235,10 @@ public class UserController {
         return "favoritos";
     }
 
+//    @GetMapping("/api/empresas/tipo/{tipoNombre}")
+//    public List<Empresa> getEmpresasByTipo(@PathVariable("tipoNombre") String tipoNombre) {
+//        return empresaService.findEmpresasByTipoEstablecimientoNombre(tipoNombre);
+//    }
     @GetMapping("/empresa/{id}")
     public String getEmpresaDetalle(@PathVariable Integer id, Model model) {
         Empresa empresa = empresaService.getEmpresaById(id);

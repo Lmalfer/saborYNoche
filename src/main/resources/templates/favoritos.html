@@ -12,6 +12,46 @@
             max-height: 200px;
             overflow-y: auto;
         }
+        .card {
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        .card-body {
+            padding: 1.5rem;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .card-text {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .badge-container {
+            margin-top: 1rem;
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin-right: 0.5rem;
+            background-color: #17a2b8;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+        .empty-favorites-message {
+            margin-top: 3rem;
+            text-align: center;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
@@ -20,24 +60,28 @@
 <div class="container">
     <h2>Favoritos</h2>
     <div class="row">
+        <div th:if="${#lists.isEmpty(favoritos)}" class="col">
+            <p class="empty-favorites-message">No tienes ningún favorito. ¡Empieza a agregar!</p>
+        </div>
         <div th:each="empresa : ${favoritos}" class="col-md-4">
             <div class="card">
-                <img th:if="${empresa.imagenBase64 != null}" th:src="'data:image/jpeg;base64,' + ${empresa.imagenBase64}" class="card-img-top" alt="Imagen de [[${empresa.nombre}]]">
+                <a th:href="@{/empresa/{id}(id=${empresa.id})}">
+                    <img th:if="${empresa.imagenBase64 != null}" th:src="'data:image/jpeg;base64,' + ${empresa.imagenBase64}" class="card-img-top" alt="Imagen de [[${empresa.nombre}]]">
+                </a>
                 <div class="card-body">
                     <h5 class="card-title" th:text="${empresa.nombre}">Nombre</h5>
-                    <p class="card-text" th:text="${empresa.descripcion}">Descripción</p>
+                    <p class="card-text" th:text="${empresa.tipoEstablecimiento.nombre}">Tipo de Establecimiento: </p>
+                    <div class="badge-container">
+                        <span th:each="categoria : ${empresa.categorias}" class="category-badge" th:text="${categoria.nombre}"></span>
+                    </div>
                     <a href="#" th:attr="data-empresa-id=${empresa.id}" onclick="eliminarFavorito(event, this)" class="btn btn-link">
                         <i class="fa fa-heart"></i> Eliminar de Favoritos
                     </a>
-
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 
 <!-- Scripts necesarios para Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

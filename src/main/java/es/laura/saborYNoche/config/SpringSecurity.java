@@ -50,7 +50,7 @@ public class SpringSecurity {
                                 .requestMatchers("/nuevaEmpresa/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/editarEmpresa/**").hasRole("EMPRESARIO")
                                 .requestMatchers("/adminEmpresa/**").hasRole("EMPRESARIO")
-                                .requestMatchers("/perfilEmpresario/**").hasRole("EMPRESARIO")
+                                .requestMatchers("/perfilEmpresario").hasRole("EMPRESARIO")
                                 .requestMatchers("/ocio/**").permitAll()
                                 .requestMatchers("/datosPersonales").authenticated()
                                 .requestMatchers("/datosPersonalesEmpresario").hasRole("EMPRESARIO")
@@ -62,7 +62,8 @@ public class SpringSecurity {
                                 .requestMatchers("/votaciones/**").authenticated()
                                 .requestMatchers("/empresa/**").permitAll()
                                 .requestMatchers("/api/empresas/**").permitAll()
-                                .requestMatchers("/reporte/**").permitAll()
+                                .requestMatchers("/establecimientos/tipo/**").permitAll()
+
                 )
                 .formLogin(
                         form -> form
@@ -103,4 +104,5 @@ public class SpringSecurity {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
+
 }

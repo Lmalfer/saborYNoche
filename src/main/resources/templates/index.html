@@ -10,20 +10,37 @@
 
     <style>
         .jumbotron {
-            background-color: peachpuff ;
+            background-color: peachpuff;
             background-size: cover;
             color: white;
             text-shadow: 2px 2px 4px #000000;
         }
-
-        .footer {
-            background-color: gray;
-            color: white;
-            padding: 20px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
+        .container {
+            margin-bottom: 4%;
+        }
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #17a2b8 !important;
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -45,7 +62,7 @@
     </div>
     <div class="row mt-4">
         <div class="col-md-4">
-            <div class="card">
+            <div class="card" onclick="loadEmpresas('Restaurante')">
                 <img src="/images/restaurantes.jpg" class="card-img-top" alt="Restaurantes">
                 <div class="card-body">
                     <h5 class="card-title">Restaurantes</h5>
@@ -54,7 +71,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card">
+            <div class="card" onclick="loadEmpresas('Bar')">
                 <img src="/images/bares.jpg" class="card-img-top" alt="Bares">
                 <div class="card-body">
                     <h5 class="card-title">Bares</h5>
@@ -63,7 +80,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card">
+            <div class="card" onclick="loadEmpresas('Discoteca')">
                 <img src="/images/ocioNocturno.jpg" class="card-img-top" alt="Ocio nocturno">
                 <div class="card-body">
                     <h5 class="card-title">Ocio nocturno</h5>
@@ -74,9 +91,50 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="empresasModal" tabindex="-1" aria-labelledby="empresasModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="empresasModalLabel">Empresas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" id="empresasList">
+                    <!-- Aquí se cargarán las empresas -->
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+<script>
+    function loadEmpresas(tipoNombre) {
+        fetch(`/api/empresas/tipo/${tipoNombre}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const empresasList = document.getElementById('empresasList');
+                empresasList.innerHTML = '';
+                data.forEach(empresa => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.innerHTML = `<a href="/empresa/${empresa.id}">${empresa.name}</a>`;
+                    empresasList.appendChild(li);
+                });
+                const modal = new bootstrap.Modal(document.getElementById('empresasModal'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+</script>
 </body>
-
 </html>

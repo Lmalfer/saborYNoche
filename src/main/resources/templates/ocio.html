@@ -95,6 +95,88 @@
         .form-control.busqueda {
             flex-grow: 1;
         }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%; /* Hace que todas las tarjetas tengan el mismo tamaño */
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .card-img-top {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover; /* Hace que la imagen se ajuste al tamaño del contenedor sin distorsionarse */
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .card-text {
+            margin-bottom: 15px;
+            color: #6c757d;
+        }
+
+        .badge-container {
+            margin-bottom: 15px;
+        }
+
+        .category-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+
+        .puntuar-btn {
+            background-color: #ffc107;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .puntuar-btn:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .media-votos {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #343a40;
+        }
     </style>
 </head>
 <body>
@@ -148,10 +230,12 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h1 class="text-center">Empresas</h1>
             <div class="row justify-content-center" id="empresas-container">
                 <!-- Iterar sobre las empresas y crear una tarjeta para cada una -->
                 <!-- Aquí se muestran las tarjetas de empresa -->
+                <div th:if="${#lists.isEmpty(empresas)}">
+                    <p>No se han agregado empresas todavía. ¡Comienza a agregar una empresa!</p>
+                </div>
                 <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card" th:id="'empresa-card-' + ${empresa.id}">
                     <div class="card">
                         <a th:href="@{/empresa/{id}(id=${empresa.id})}">
@@ -159,13 +243,16 @@
                         </a>
                         <div class="card-body">
                             <h5 class="card-title" th:text="${empresa.nombre}">Nombre Empresa</h5>
-                            <p class="card-text" th:text="${empresa.descripcion}">Descripción de la empresa</p>
+                            <p class="card-text" th:text="${empresa.tipoEstablecimiento.nombre}">Tipo de Establecimiento: </p>
+                            <div class="badge-container">
+                                <span th:each="categoria : ${empresa.categorias}" class="category-badge" th:text="${categoria.nombre}"></span>
+                            </div>
                             <p class="card-text"><small class="text-muted" th:text="${empresa.direccion}">Dirección de la empresa</small></p>
                             <!-- Mostrar media de votos -->
                             <th:block th:if="${#authorization.expression('isAuthenticated()')}">
-                            <div class="media-votos">
-                                Media de Votos: <span class="media"></span>
-                            </div>
+                                <div class="media-votos">
+                                    Media de Votos: <span class="media"></span>
+                                </div>
                             </th:block>
                             <!-- Botón "Puntuar" -->
                             <th:block th:if="${#authorization.expression('isAuthenticated()')}">
@@ -180,6 +267,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -199,6 +287,7 @@
         <button id="submit-rating">Enviar Puntuación</button>
     </div>
 </div>
+
 <!-- Scripts necesarios para Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>

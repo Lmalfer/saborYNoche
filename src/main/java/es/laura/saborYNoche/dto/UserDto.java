@@ -2,7 +2,8 @@ package es.laura.saborYNoche.dto;
 
 import es.laura.saborYNoche.enums.RoleEnum;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,17 +13,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto
-{
-    private Long id;
-    @NotEmpty
+public class UserDto {
+
+    @NotBlank(message = "El nombre es requerido")
     private String firstName;
-    @NotEmpty
+
+    @NotBlank(message = "El apellido es requerido")
     private String lastName;
-    @NotEmpty(message = "Email should not be empty")
-    @Email
+
+    @Email(message = "El correo electrónico no es válido")
+    @NotBlank(message = "El correo electrónico es requerido")
     private String email;
-    @NotEmpty(message = "Password should not be empty")
+
+    @NotBlank(message = "La contraseña es requerida")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
+
     private RoleEnum role;
 }

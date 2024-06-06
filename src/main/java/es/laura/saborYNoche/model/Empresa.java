@@ -13,6 +13,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -93,6 +94,8 @@ public class Empresa {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "fecha_publicacion")
+    private LocalDateTime fechaPublicacion;
 
 //    @ManyToMany(fetch = FetchType.EAGER)
 //    private Set<User> usuariosQueVotaron = new HashSet<>();

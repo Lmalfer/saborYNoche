@@ -8,13 +8,13 @@ import es.laura.saborYNoche.repository.EmpresaRepository;
 import es.laura.saborYNoche.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,11 +84,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(username);
     }
 
+
     @Override
     public void updateUser(User user) {
         userRepository.save(user);
     }
-
 
     public User save(User user) {
         return userRepository.save(user);
@@ -127,6 +127,12 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("La empresa con ID " + empresaId + " no se encontró en la base de datos.");
         }
     }
+
+
+    public List<User> findAllEmpresarios() {
+        return userRepository.findByRole(RoleEnum.EMPRESARIO);
+    }
+
 }
 
 

@@ -24,4 +24,11 @@ public interface EmpresaService {
 //    double calcularMediaVotos(Integer empresaId);
     List<Map<String, Object>> obtenerMediasVotosPorEmpresa();
     Empresa getEmpresaById(Integer id);
+    Map<User, Long> obtenerNumeroDeLocalesPorEmpresario(User user, Pageable pageable);
+    Map<Integer, Double> obtenerMediasVotosPorLocal(User user, Pageable pageable);
+    List<Empresa> obtenerLocalesPublicadosUltimoMes(User user, Pageable pageable);
+
+    List<Empresa> listarDiscotecas();
+    List<Empresa> listarBares();
+    List<Empresa> listarRestaurantes();
 }

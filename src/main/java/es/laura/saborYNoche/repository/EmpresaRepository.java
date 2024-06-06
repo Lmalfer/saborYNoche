@@ -1,5 +1,6 @@
 package es.laura.saborYNoche.repository;
 
+import es.laura.saborYNoche.model.Categoria;
 import es.laura.saborYNoche.model.Empresa;
 import es.laura.saborYNoche.model.User;
 import org.springframework.data.domain.Page;
@@ -32,5 +33,10 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
 
     @Query("SELECT e FROM Empresa e JOIN e.categorias c WHERE c.id IN :categorias AND e.tipoEstablecimiento.id = :tipo")
     List<Empresa> buscarEmpresasPorCategoriasYTipo(@Param("categorias") List<Integer> categorias, @Param("tipo") Integer tipo);
-    }
+
+    @Query("SELECT e FROM Empresa e WHERE e.tipoEstablecimiento.id IN (:ids)")
+    List<Empresa> findByTipoEstablecimientoIds(@Param("ids") List<Integer> ids);
+//    List<Empresa> findEmpresaByCategoria(Categoria categoria);
+
+}
 

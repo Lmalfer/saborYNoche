@@ -1,17 +1,11 @@
 package es.laura.saborYNoche.service;
 
-import es.laura.saborYNoche.enums.RoleEnum;
 import es.laura.saborYNoche.exception.RecursoNoEncontradoException;
 import es.laura.saborYNoche.model.*;
 import es.laura.saborYNoche.repository.CategoriaRepository;
 import es.laura.saborYNoche.repository.EmpresaRepository;
 import es.laura.saborYNoche.repository.TipoEstablecimientoRepository;
 import es.laura.saborYNoche.repository.UserRepository;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +13,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -128,8 +124,54 @@ public class EmpresaServiceImpl implements EmpresaService {
                 "GROUP BY v.empresa_id";
         return jdbcTemplate.queryForList(sql);
     }
-    public Empresa getEmpresaById(Integer id) {
+
+
+
+        public Empresa getEmpresaById(Integer id) {
         Optional<Empresa> empresaOptional = empresaRepository.findById(id);
         return empresaOptional.orElse(null); // Devuelve la empresa si está presente, o null si no lo está
+    }
+    @Override
+    public Map<User, Long> obtenerNumeroDeLocalesPorEmpresario(User user, Pageable pageable) {
+        return empresaRepository.findByUser(user, pageable).stream()
+                .collect(Collectors.groupingBy(Empresa::getUser, Collectors.counting()));
+    }
+
+    @Override
+    public List<Empresa> obtenerLocalesPublicadosUltimoMes(User user, Pageable pageable) {
+        LocalDateTime haceUnMes = LocalDateTime.now().minusMonths(1);
+        return empresaRepository.findByUser(user, pageable).stream()
+                .filter(empresa -> empresa.getFechaPublicacion() != null && empresa.getFechaPublicacion().isAfter(haceUnMes))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public Map<Integer, Double> obtenerMediasVotosPorLocal(User user, Pageable pageable) {
+        String sql = "SELECT v.empresa_id, AVG(v.puntuacion) AS media_votos " +
+                "FROM (SELECT empresa_id, SUM(puntuacion) AS puntuacion " +
+                "FROM votos " +
+                "GROUP BY empresa_id, user_id) v " +
+                "GROUP BY v.empresa_id";
+        List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql);
+        Map<Integer, Double> mediaVotosPorLocal = new HashMap<>();
+        for (Map<String, Object> row : resultList) {
+            Integer empresaId = (Integer) row.get("empresa_id");
+            BigDecimal mediaVotos = (BigDecimal) row.get("media_votos");
+            mediaVotosPorLocal.put(empresaId, mediaVotos.doubleValue());
+        }
+        return mediaVotosPorLocal;
+    }
+
+    public List<Empresa> listarRestaurantes() {
+        return empresaRepository.findByTipoEstablecimientoIds(List.of(1));
+    }
+
+    public List<Empresa> listarBares() {
+        return empresaRepository.findByTipoEstablecimientoIds(List.of(2));
+    }
+
+    public List<Empresa> listarDiscotecas() {
+        return empresaRepository.findByTipoEstablecimientoIds(List.of(4));
     }
 }
