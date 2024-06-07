@@ -105,4 +105,9 @@ public class Empresa {
     @MapKeyJoinColumn(name = "user_id")
     @Column(name = "puntuacion")
     private Map<User, Integer> puntuaciones = new HashMap<>();
+
+    @ManyToOne
+    @JoinColumn(name = "promocion_id")
+    private Promocion promocion;
+
 }

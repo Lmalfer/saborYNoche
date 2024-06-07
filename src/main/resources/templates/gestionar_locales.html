@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestionar Locales</title>
+  <!-- Añadir Bootstrap CSS para estilos (opcional) -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<style>
+  body {
+  background-color: #f8f9fa;
+}
+
+.navbar {
+  background-color: #343a40 !important;
+}
+
+.navbar-brand {
+  color: #ffffff !important;
+}
+
+.navbar-nav .nav-link {
+  color: #ffffff !important;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #17a2b8 !important;
+}
+
+</style>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">Sabor y Noche</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/adminEmpresa">Panel de Administración</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+             data-toggle="dropdown" aria-expanded="false">
+            Perfil
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" th:href="@{/perfilEmpresario}">Datos Personales</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form th:action="@{/logout}" method="post">
+                <button type="submit" class="dropdown-item">Cerrar Sesión</button>
+              </form>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <!-- Mostrar mensajes de éxito o error -->
+  <div th:if="${mensaje}" class="alert alert-success" role="alert">
+    <span th:text="${mensaje}"></span>
+  </div>
+
+  <h1>Gestionar Locales</h1>
+  <form action="/adminEmpresa/aplicar-promocion" method="post">
+    <select name="promocionId">
+      <option th:each="promocion : ${promociones}" th:value="${promocion.id}" th:text="${promocion.texto}"></option>
+    </select>
+    <button type="submit" class="btn btn-primary">Aplicar Promoción</button>
+  </form>
+  <form action="/adminEmpresa/quitar-promocion" method="post">
+    <button type="submit" class="btn btn-danger">Quitar Promoción</button>
+  </form>
+  <h2>Locales</h2>
+  <ul>
+    <li th:each="empresa : ${empresas}">
+      <span th:text="${empresa.nombre}"></span> -
+      <span th:if="${empresa.promocion != null}" th:text="${empresa.promocion.texto}"></span>
+      <span th:if="${empresa.promocion == null}">Sin Promoción</span>
+    </li>
+  </ul>
+</div>
+
+<!-- Añadir scripts de Bootstrap y jQuery (opcional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -177,6 +177,20 @@
             margin-bottom: 10px;
             color: #343a40;
         }
+        .promocion {
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            border: 1px solid #ffc107;
+            background-color: #fff9ec;
+        }
+
+        .promocion.card-title {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .promocion.card-text {
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -236,7 +250,7 @@
                 <div th:if="${#lists.isEmpty(empresas)}">
                     <p>No se han agregado empresas todavía. ¡Comienza a agregar una empresa!</p>
                 </div>
-                <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card" th:id="'empresa-card-' + ${empresa.id}">
+                <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card" th:id="'empresa-card-' + ${empresa.id}" th:classappend="${empresa.promocion!= null? 'promocion' : ''}">
                     <div class="card">
                         <a th:href="@{/empresa/{id}(id=${empresa.id})}">
                             <img th:if="${empresa.imagenBase64 != null}" th:src="'data:image/jpeg;base64,' + ${empresa.imagenBase64}" class="card-img-top" alt="Imagen de [[${empresa.nombre}]]">
@@ -264,6 +278,7 @@
                                     <i class="fa fa-heart" aria-hidden="true"></i> <span id="favoritoText">Favorito</span>
                                 </a>
                             </th:block>
+                            <p th:if="${empresa.promocion!= null}" class="card-text promocion"> <span th:text="${empresa.promocion.texto}">Promoción</span></p>
                         </div>
                     </div>
                 </div>
@@ -287,6 +302,7 @@
         <button id="submit-rating">Enviar Puntuación</button>
     </div>
 </div>
+
 
 <!-- Scripts necesarios para Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -530,7 +546,6 @@
                 console.error("Error al obtener las empresas con medias de votos:", error);
             });
     }
-
 </script>
 </body>
 </html>

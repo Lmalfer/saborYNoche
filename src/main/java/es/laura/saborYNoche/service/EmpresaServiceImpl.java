@@ -2,11 +2,9 @@ package es.laura.saborYNoche.service;
 
 import es.laura.saborYNoche.exception.RecursoNoEncontradoException;
 import es.laura.saborYNoche.model.*;
-import es.laura.saborYNoche.repository.CategoriaRepository;
-import es.laura.saborYNoche.repository.EmpresaRepository;
-import es.laura.saborYNoche.repository.TipoEstablecimientoRepository;
-import es.laura.saborYNoche.repository.UserRepository;
+import es.laura.saborYNoche.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +23,6 @@ public class EmpresaServiceImpl implements EmpresaService {
     private final CategoriaRepository categoriaRepository;
     private final TipoEstablecimientoRepository tipoEstablecimientoRepository;
     private final UserRepository userRepository;
-
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -164,14 +161,16 @@ public class EmpresaServiceImpl implements EmpresaService {
     }
 
     public List<Empresa> listarRestaurantes() {
+
         return empresaRepository.findByTipoEstablecimientoIds(List.of(1));
     }
-
     public List<Empresa> listarBares() {
+
         return empresaRepository.findByTipoEstablecimientoIds(List.of(2));
     }
-
     public List<Empresa> listarDiscotecas() {
+
         return empresaRepository.findByTipoEstablecimientoIds(List.of(4));
     }
+
 }

@@ -63,7 +63,9 @@ public class SpringSecurity {
                                 .requestMatchers("/empresa/**").permitAll()
                                 .requestMatchers("/api/empresas/**").permitAll()
                                 .requestMatchers("/establecimientos/tipo/**").permitAll()
-
+                                .requestMatchers("/reservas/nueva").hasRole("USER")
+                                .requestMatchers("/reservas/pendientes").hasRole("EMPRESARIO")
+                                .requestMatchers("/reservas/actualizar-estado").hasRole("EMPRESARIO")
                 )
                 .formLogin(
                         form -> form

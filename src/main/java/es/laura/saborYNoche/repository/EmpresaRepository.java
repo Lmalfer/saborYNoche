@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
     Page<Empresa> findByUser(User user, Pageable pageable);
@@ -37,6 +38,8 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Integer> {
     @Query("SELECT e FROM Empresa e WHERE e.tipoEstablecimiento.id IN (:ids)")
     List<Empresa> findByTipoEstablecimientoIds(@Param("ids") List<Integer> ids);
 //    List<Empresa> findEmpresaByCategoria(Categoria categoria);
+List<Empresa> findAllByUser(User user);
+    List<Empresa> findByUserId(Long userId);
 
 }
 

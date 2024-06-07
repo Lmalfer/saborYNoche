@@ -1,20 +1,17 @@
 package es.laura.saborYNoche.controller;
 
 import es.laura.saborYNoche.exception.RecursoNoEncontradoException;
-import es.laura.saborYNoche.model.Categoria;
-import es.laura.saborYNoche.model.Empresa;
-import es.laura.saborYNoche.model.TipoEstablecimiento;
-import es.laura.saborYNoche.model.User;
-import es.laura.saborYNoche.repository.CategoriaRepository;
-import es.laura.saborYNoche.repository.TipoEstablecimientoRepository;
-import es.laura.saborYNoche.repository.UserRepository;
+import es.laura.saborYNoche.model.*;
+import es.laura.saborYNoche.repository.*;
 import es.laura.saborYNoche.service.EmpresaService;
+import es.laura.saborYNoche.service.PromocionService;
 import es.laura.saborYNoche.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -24,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -47,7 +45,14 @@ public class EmpresaController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PromocionService promocionService;
 
+    @Autowired
+    private PromocionRepository promocionRepository;
+
+    @Autowired
+    private EmpresaRepository empresaRepository;
     // Listar empresas por usuario
     @GetMapping("")
     public ModelAndView listarEmpresas(@PageableDefault(sort = "nombre", size = 5) Pageable pageable) {
@@ -225,5 +230,33 @@ public class EmpresaController {
         mav.addObject("reporteData", reporteData);
         return mav;
     }
+    @PostMapping("/aplicar-promocion")
+    public String aplicarPromocion(@RequestParam Long promocionId, Authentication authentication, RedirectAttributes redirectAttributes) {
+        User user = userService.findUserByEmail(authentication.getName());
+        Promocion promocion = promocionRepository.findById(promocionId).orElseThrow(() -> new IllegalArgumentException("Promoción no encontrada"));
 
+        promocionService.aplicarPromocionATodasLasEmpresas(promocion, user);
+        redirectAttributes.addFlashAttribute("mensaje", "Promoción aplicada correctamente.");
+        return "redirect:/adminEmpresa/gestionar_locales";
+    }
+
+    @PostMapping("/quitar-promocion")
+    public String quitarPromocion(Authentication authentication, RedirectAttributes redirectAttributes) {
+        User user = userService.findUserByEmail(authentication.getName());
+
+        promocionService.quitarPromocionDeTodasLasEmpresas(user);
+        redirectAttributes.addFlashAttribute("mensaje", "Promoción quitada correctamente.");
+        return "redirect:/adminEmpresa/gestionar_locales";
+    }
+
+    @GetMapping("/gestionar_locales")
+    public String gestionarLocales(Model model, Authentication authentication) {
+        User user = userService.findUserByEmail(authentication.getName());
+        List<Empresa> empresas = empresaRepository.findAllByUser(user);
+        List<Promocion> promociones = promocionRepository.findAll();
+
+        model.addAttribute("empresas", empresas);
+        model.addAttribute("promociones", promociones);
+        return "gestionar_locales";
+    }
 }

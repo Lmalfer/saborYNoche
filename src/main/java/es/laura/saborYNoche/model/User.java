@@ -50,4 +50,5 @@ public class User {
           inverseJoinColumns = @JoinColumn(name = "empresa_id")
   )
   private List<Empresa> empresas;
+
 }

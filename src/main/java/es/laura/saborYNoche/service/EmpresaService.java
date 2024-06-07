@@ -31,4 +31,5 @@ public interface EmpresaService {
     List<Empresa> listarDiscotecas();
     List<Empresa> listarBares();
     List<Empresa> listarRestaurantes();
+
 }
