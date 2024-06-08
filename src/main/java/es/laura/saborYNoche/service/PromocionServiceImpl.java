@@ -6,35 +6,59 @@ import es.laura.saborYNoche.model.User;
 import es.laura.saborYNoche.repository.EmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.List;
 
 @Service
-public class PromocionServiceImpl implements PromocionService{
+public class PromocionServiceImpl implements PromocionService {
 
     @Autowired
     private EmpresaRepository empresaRepository;
 
+    @Autowired
+    private PlatformTransactionManager transactionManager;
     @Transactional
     public void aplicarPromocionATodasLasEmpresas(Promocion promocion, User user) {
-        List<Empresa> empresas = empresaRepository.findAllByUser(user);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(def);
 
-        for (Empresa empresa : empresas) {
-            empresa.setPromocion(promocion);
+        try {
+            List<Empresa> empresas = empresaRepository.findAllByUser(user);
+
+            for (Empresa empresa : empresas) {
+                empresa.setPromocion(promocion);
+            }
+
+            empresaRepository.saveAll(empresas);
+
+            transactionManager.commit(status);
+        } catch (RuntimeException e) {
+            transactionManager.rollback(status);
+            throw e;
         }
-
-        empresaRepository.saveAll(empresas);
     }
-
     @Transactional
     public void quitarPromocionDeTodasLasEmpresas(User user) {
-        List<Empresa> empresas = empresaRepository.findAllByUser(user);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        TransactionStatus status = transactionManager.getTransaction(def);
 
-        for (Empresa empresa : empresas) {
-            empresa.setPromocion(null);
+        try {
+            List<Empresa> empresas = empresaRepository.findAllByUser(user);
+
+            for (Empresa empresa : empresas) {
+                empresa.setPromocion(null);
+            }
+
+            empresaRepository.saveAll(empresas);
+
+            transactionManager.commit(status);
+        } catch (RuntimeException e) {
+            transactionManager.rollback(status);
+            throw e;
         }
-
-        empresaRepository.saveAll(empresas);
     }
 }
