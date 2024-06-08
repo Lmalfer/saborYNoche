@@ -391,10 +391,9 @@
 
         var xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function () {
             if (xhr.status === 200) {
-                var responseText = xhr.responseText;
                 if (isFavorito) {
                     icon.classList.remove('favorito');
                     spanText.innerText = 'Favorito';
@@ -402,10 +401,7 @@
                     icon.classList.add('favorito');
                     spanText.innerText = 'Eliminar de favoritos';
                 }
-                alert(responseText);
-
-                // Actualizar el estado en el almacenamiento local
-                updateLocalStorage(empresaId, !isFavorito);
+                alert(xhr.responseText);
 
                 // Recargar la página después de actualizar los favoritos
                 location.reload();
@@ -416,30 +412,26 @@
         xhr.send();
     }
 
-
-    function updateLocalStorage(empresaId, isFavorito) {
-        var favoritos = JSON.parse(localStorage.getItem('favoritos')) || {};
-        favoritos[empresaId] = isFavorito;
-        localStorage.setItem('favoritos', JSON.stringify(favoritos));
-    }
-
     function initializeFavoritos() {
-        var favoritos = JSON.parse(localStorage.getItem('favoritos')) || {};
-        for (var empresaId in favoritos) {
-            var isFavorito = favoritos[empresaId];
-            var element = document.querySelector('a[data-empresa-id="' + empresaId + '"]');
-            if (element) {
-                var icon = element.querySelector('i.fa-heart');
-                var spanText = element.querySelector('span#favoritoText');
-                if (isFavorito) {
-                    icon.classList.add('favorito');
-                    spanText.innerText = 'Eliminar de favoritos';
-                } else {
-                    icon.classList.remove('favorito');
-                    spanText.innerText = 'Favorito';
-                }
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/favoritos/ids', true);
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var favoritos = JSON.parse(xhr.responseText);
+                favoritos.forEach(function (empresaId) {
+                    var element = document.querySelector('a[data-empresa-id="' + empresaId + '"]');
+                    if (element) {
+                        var icon = element.querySelector('i.fa-heart');
+                        var spanText = element.querySelector('span#favoritoText');
+                        icon.classList.add('favorito');
+                        spanText.innerText = 'Eliminar de favoritos';
+                    }
+                });
+            } else {
+                console.error('Error al obtener favoritos');
             }
-        }
+        };
+        xhr.send();
     }
 
     document.addEventListener("DOMContentLoaded", function() {

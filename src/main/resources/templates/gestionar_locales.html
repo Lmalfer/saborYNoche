@@ -1,34 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Gestionar Locales</title>
-  <!-- Añadir Bootstrap CSS para estilos (opcional) -->
+  <!-- Añadir Bootstrap CSS para estilos -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <style>
   body {
-  background-color: #f8f9fa;
-}
+    background-color: #f8f9fa;
+  }
 
-.navbar {
-  background-color: #343a40 !important;
-}
+  .navbar {
+    background-color: #343a40 !important;
+  }
 
-.navbar-brand {
-  color: #ffffff !important;
-}
+  .navbar-brand {
+    color: #ffffff !important;
+  }
 
-.navbar-nav .nav-link {
-  color: #ffffff !important;
-  transition: all 0.3s ease;
-}
+  .navbar-nav .nav-link {
+    color: #ffffff !important;
+    transition: all 0.3s ease;
+  }
 
-.navbar-nav .nav-link:hover {
-  color: #17a2b8 !important;
-}
+  .navbar-nav .nav-link:hover {
+    color: #17a2b8 !important;
+  }
 
+  .flash-message {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1050;
+    display: none;
+  }
 </style>
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -41,7 +48,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+          <a class="nav-link active" aria-current="page" href="/empresarios">Inicio</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/adminEmpresa">Panel de Administración</a>
@@ -70,13 +77,16 @@
 
 <div class="container mt-4">
   <!-- Mostrar mensajes de éxito o error -->
-  <div th:if="${mensaje}" class="alert alert-success" role="alert">
-    <span th:text="${mensaje}"></span>
+  <div class="flash-message">
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+      <span th:text="${mensaje}"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   </div>
 
   <h1>Gestionar Locales</h1>
   <form action="/adminEmpresa/aplicar-promocion" method="post">
-    <select name="promocionId">
+    <select name="promocionId" class="form-select mb-3">
       <option th:each="promocion : ${promociones}" th:value="${promocion.id}" th:text="${promocion.texto}"></option>
     </select>
     <button type="submit" class="btn btn-primary">Aplicar Promoción</button>
@@ -85,8 +95,8 @@
     <button type="submit" class="btn btn-danger">Quitar Promoción</button>
   </form>
   <h2>Locales</h2>
-  <ul>
-    <li th:each="empresa : ${empresas}">
+  <ul class="list-group">
+    <li th:each="empresa : ${empresas}" class="list-group-item">
       <span th:text="${empresa.nombre}"></span> -
       <span th:if="${empresa.promocion != null}" th:text="${empresa.promocion.texto}"></span>
       <span th:if="${empresa.promocion == null}">Sin Promoción</span>
@@ -94,9 +104,22 @@
   </ul>
 </div>
 
-<!-- Añadir scripts de Bootstrap y jQuery (opcional) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!-- Añadir scripts de Bootstrap y jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var flashMessage = $('.flash-message .alert');
+    if (flashMessage.length) {
+      flashMessage.fadeIn();
+      setTimeout(function() {
+        flashMessage.fadeOut('slow', function() {
+          $(this).remove();
+        });
+      }, 5000); // El mensaje desaparecerá después de 5 segundos
+    }
+  });
+</script>
 </body>
 </html>

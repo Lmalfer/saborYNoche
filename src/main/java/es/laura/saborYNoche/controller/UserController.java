@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -234,7 +235,22 @@ public class UserController {
 
         return "favoritos";
     }
+    @GetMapping("/favoritos/ids")
+    public ResponseEntity<List<Integer>> obtenerFavoritos(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
 
+        User currentUser = userService.findByEmail(userDetails.getUsername());
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        List<Integer> favoritosIds = currentUser.getEmpresas().stream()
+                .map(Empresa::getId)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(favoritosIds);
+    }
 //    @GetMapping("/api/empresas/tipo/{tipoNombre}")
 //    public List<Empresa> getEmpresasByTipo(@PathVariable("tipoNombre") String tipoNombre) {
 //        return empresaService.findEmpresasByTipoEstablecimientoNombre(tipoNombre);

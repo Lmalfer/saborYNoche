@@ -7,8 +7,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
     <style>
         .user-icon {
-            position: absolute;
-            right: 10px;
+            color: white;
+            font-size: 1.5em;
+        }
+
+        .navbar-nav {
+            flex-direction: row;
+        }
+
+        @media (max-width: 992px) {
+            .navbar-nav {
+                flex-direction: column;
+            }
+
+            .navbar-toggler {
+                order: 1;
+            }
+
+            .navbar-collapse {
+                order: 2;
+                width: 100%;
+            }
+
+            .user-icon-container {
+                order: 3;
+                display: flex;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .user-icon {
+                margin-top: 10px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .user-icon-container {
+                position: absolute;
+                right: 10px;
+            }
         }
     </style>
 </head>
@@ -30,9 +67,11 @@
                 </li>
             </ul>
         </div>
-        <a class="nav-link user-icon" href="#" th:href="@{/login}">
-            <i class="bi bi-person-circle" style="font-size: 1.5em; color: white;"></i>
-        </a>
+        <div class="user-icon-container">
+            <a class="nav-link" href="#" th:href="@{/login}">
+                <i class="bi bi-person-circle user-icon"></i>
+            </a>
+        </div>
     </div>
 </nav>
 
