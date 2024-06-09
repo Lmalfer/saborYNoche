@@ -13,7 +13,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -207,27 +209,24 @@ public class EmpresaController {
         return "redirect:/adminEmpresa";
     }
     @GetMapping("/reporte")
-    public ModelAndView generarReporte() {
-        List<User> empresarios = userService.findAllEmpresarios();
-        List<Map<String, Object>> reporteData = new ArrayList<>();
+    public ModelAndView generarReporte(@AuthenticationPrincipal UserDetails userDetails) {
+        // Obtener el usuario actualmente autenticado
+        User currentUser = userService.findByEmail(userDetails.getUsername());
 
-        for (User user : empresarios) {
-            Map<String, Object> reporte = new HashMap<>();
+        // Crear el reporte para el usuario autenticado
+        Map<String, Object> reporte = new HashMap<>();
 
-            Map<User, Long> numeroDeLocales = empresaService.obtenerNumeroDeLocalesPorEmpresario(user, Pageable.unpaged());
-            List<Empresa> localesUltimoMes = empresaService.obtenerLocalesPublicadosUltimoMes(user, Pageable.unpaged());
-            Map<Integer, Double> mediasVotos = empresaService.obtenerMediasVotosPorLocal(user, Pageable.unpaged());
+        Map<User, Long> numeroDeLocales = empresaService.obtenerNumeroDeLocalesPorEmpresario(currentUser, Pageable.unpaged());
+        List<Empresa> localesUltimoMes = empresaService.obtenerLocalesPublicadosUltimoMes(currentUser, Pageable.unpaged());
+        Map<Integer, Double> mediasVotos = empresaService.obtenerMediasVotosPorLocal(currentUser, Pageable.unpaged());
 
-            reporte.put("empresario", user);
-            reporte.put("numeroDeLocales", numeroDeLocales);
-            reporte.put("localesUltimoMes", localesUltimoMes);
-            reporte.put("mediasVotos", mediasVotos);
-
-            reporteData.add(reporte);
-        }
+        reporte.put("empresario", currentUser);
+        reporte.put("numeroDeLocales", numeroDeLocales);
+        reporte.put("localesUltimoMes", localesUltimoMes);
+        reporte.put("mediasVotos", mediasVotos);
 
         ModelAndView mav = new ModelAndView("reporte");
-        mav.addObject("reporteData", reporteData);
+        mav.addObject("reporteData", Collections.singletonList(reporte));
         return mav;
     }
     @PostMapping("/aplicar-promocion")

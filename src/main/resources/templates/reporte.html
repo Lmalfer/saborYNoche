@@ -84,15 +84,16 @@
                     <tbody>
                     <tr th:each="empresa : ${reporte.localesUltimoMes}">
                         <td th:text="${empresa.nombre}">Nombre Empresa</td>
-                        <td th:text="${#temporals.format(empresa.fechaPublicacion, 'dd/MM/yyyy')}">Fecha de Publicación</td>                        <td th:text="${reporte.mediasVotos.get(empresa.id)}">0</td>
+                        <td th:text="${#temporals.format(empresa.fechaPublicacion, 'dd/MM/yyyy')}">Fecha de Publicación</td>
+                        <td th:text="${reporte.mediasVotos.get(empresa.id)}">0</td>
                     </tr>
                     </tbody>
                 </table>
             </li>
         </ul>
     </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
