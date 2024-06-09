@@ -36,11 +36,18 @@
     z-index: 1050;
     display: none;
   }
+
+  .ms-auto {
+    margin-left: auto !important;
+  }
 </style>
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/empresarios">Sabor y Noche</a>
+    <a class="navbar-brand" href="#">
+      <img src="/iconos/saborYNoche.png" alt="Sabor y Noche Icono" style="width: 30px; height: auto;">
+      Sabor y Noche
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -56,7 +63,7 @@
              data-bs-toggle="dropdown" aria-expanded="false">
             Perfil
           </a>
-          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <div class="dropdown-menu dropdown-menu-right dropdown-menu-end" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="/perfilEmpresario">Datos Personales</a>
             <div class="dropdown-divider"></div>
             <form th:action="@{/logout}" method="post">
@@ -68,7 +75,6 @@
     </div>
   </div>
 </nav>
-
 <div class="container mt-4">
   <!-- Mostrar mensajes de éxito o error -->
   <div class="flash-message">
@@ -83,10 +89,8 @@
     <select name="promocionId" class="form-select mb-3">
       <option th:each="promocion : ${promociones}" th:value="${promocion.id}" th:text="${promocion.texto}"></option>
     </select>
-    <button type="submit" class="btn btn-primary">Aplicar Promoción</button>
-  </form>
-  <form action="/adminEmpresa/quitar-promocion" method="post">
-    <button type="submit" class="btn btn-danger">Quitar Promoción</button>
+    <button type="submit" class="btn btn-primary mr-2">Aplicar Promoción</button>
+    <button type="submit" formaction="/adminEmpresa/quitar-promocion" class="btn btn-danger">Quitar Promoción</button>
   </form>
   <h2>Locales</h2>
   <ul class="list-group">
@@ -99,9 +103,6 @@
 </div>
 
 <!-- Añadir scripts de Bootstrap y jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function() {
     var flashMessage = $('.flash-message .alert');
@@ -115,5 +116,7 @@
     }
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
