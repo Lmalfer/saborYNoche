@@ -9,6 +9,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
+        body{
+            background-color: mistyrose !important;
+        }
         .dropdown-menu {
             max-height: 200px;
             overflow-y: auto;
@@ -178,9 +181,9 @@
             color: #343a40;
         }
         .promocion {
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-            border: 1px solid #ffc107;
-            background-color: #fff9ec;
+            box-shadow: 0 0 15px brown;
+            border: 1px solid brown;
+            background-color: brown;
         }
 
         .promocion.card-title {
@@ -189,7 +192,23 @@
         }
 
         .promocion.card-text {
-            color: #666;
+            color: white;
+        }
+        .empresa-card {
+            margin: 10px; /* Añade un margen para separar las cards */
+            max-width: 500px; /* Reduce el ancho máximo de las cards */
+            flex: 0 0 380px; /* Establece un ancho fijo para las cards */
+        }
+        .row {
+            --bs-gutter-x: 0 !important;
+        }
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #17a2b8 !important;
         }
     </style>
 </head>
@@ -205,50 +224,31 @@
                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
                     <input type="text" class="form-control provincia" id="provincia-input" name="provincia" placeholder="Provincia" autocomplete="off">
                     <input type="text" class="form-control poblacion" id="poblacion-input" name="poblacion" placeholder="Población" autocomplete="off">
-                    <button class="btn btn-secondary" type="button" onclick="clearLocationInput()">X</button>
                     <input type="text" class="form-control busqueda" id="search-input" name="busqueda" placeholder="Nombre o dirección">
                     <button class="btn btn-primary" type="submit">BÚSQUEDA</button>
-
-                    <div class="dropdown-filter">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-funnel"></i> Filtros
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="filterDropdown">
-                            <h5>Filtros populares</h5>
-                            <ul class="list-unstyled">
-                                <li th:each="categoria : ${categorias}">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="categoria-${categoria.id}" name="categorias" value="${categoria.id}" data-categoria-id="${categoria.id}">
-                                        <label class="form-check-label" for="categoria-${categoria.id}" th:text="${categoria.nombre}">Categoría</label>
-                                    </div>
-                                </li>
-                            </ul>
-                            <h5>Tipos de establecimiento</h5>
-                            <ul class="list-unstyled">
-                                <li th:each="tipo : ${tiposEstablecimiento}">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="tipo-${tipo.id}" name="tipos" value="${tipo.id}" data-tipo-id="${tipo.id}">
-                                        <label class="form-check-label" for="tipo-${tipo.id}" th:text="${tipo.nombre}">Tipo de Establecimiento</label>
-                                    </div>
-                                </li>
-                            </ul>
-                            <button class="btn btn-primary w-100" onclick="capturarFiltros()">Filtrar</button>
-                            <input type="hidden" id="categoriasSeleccionadas" name="categorias">
-                            <input type="hidden" id="tiposSeleccionados" name="tipos">
-                        </ul>
-                    </div>
                 </div>
+            </div>
+            <div class="col-md-12 mt-3">
+                <label for="tipoEstablecimiento">Tipo de establecimiento:</label>
+                <select id="tipoEstablecimiento" name="tipoEstablecimiento">
+                    <option value="">Todos</option>
+                    <option th:each="tipoEstablecimiento : ${tiposEstablecimiento}"
+                            th:value="${tipoEstablecimiento.id}"
+                            th:text="${tipoEstablecimiento.nombre}"></option>
+                </select>
+                <button id="filtroTipoEstablecimiento" type="button">Filtrar</button>
             </div>
         </div>
     </form>
+</div>
 
     <div class="row">
         <div class="col-md-12">
-            <div class="row justify-content-center" id="empresas-container">
+            <div class="row justify-content-center" id="empresas-container" th:fragment="empresasLista" >
                 <!-- Iterar sobre las empresas y crear una tarjeta para cada una -->
                 <!-- Aquí se muestran las tarjetas de empresa -->
                 <div th:if="${#lists.isEmpty(empresas)}">
-                    <p>No se han agregado empresas todavía. ¡Comienza a agregar una empresa!</p>
+                    <p>No hay empresas disponibles.</p>
                 </div>
                 <div th:each="empresa : ${empresas}" class="col-md-4 mb-4 empresa-card" th:id="'empresa-card-' + ${empresa.id}" th:classappend="${empresa.promocion!= null? 'promocion' : ''}">
                     <div class="card">
@@ -334,17 +334,27 @@
         suggestions.style.display = hasMatch ? 'block' : 'none';
     }
 
-    function selectLocation(item) {
-        var provinciaInput = document.getElementById('provincia-input');
-        var poblacionInput = document.getElementById('poblacion-input');
+    // function selectLocation(item) {
+    //     var provinciaInput = document.getElementById('provincia-input');
+    //     var poblacionInput = document.getElementById('poblacion-input');
+    //
+    //     if (item.textContent.toLowerCase().includes(provinciaInput.value.toLowerCase())) {
+    //         provinciaInput.value = item.textContent;
+    //     } else if (item.textContent.toLowerCase().includes(poblacionInput.value.toLowerCase())) {
+    //         poblacionInput.value = item.textContent;
+    //     }
+    //     document.getElementById('location-suggestions').style.display = 'none';
+    // }
+    // filtro tipo establecimiento Capturar el evento de cambio en el select
+    document.getElementById('tipoEstablecimiento').addEventListener('change', function() {
+        var tipoEstablecimientoId = this.value; // Obtener el valor seleccionado
 
-        if (item.textContent.toLowerCase().includes(provinciaInput.value.toLowerCase())) {
-            provinciaInput.value = item.textContent;
-        } else if (item.textContent.toLowerCase().includes(poblacionInput.value.toLowerCase())) {
-            poblacionInput.value = item.textContent;
-        }
-        document.getElementById('location-suggestions').style.display = 'none';
-    }
+        // Enviar la solicitud AJAX al controlador para filtrar por tipo de establecimiento
+        $.get('/ocio/filtro', { tipoEstablecimientoId: tipoEstablecimientoId }, function(data) {
+            // Actualizar el contenido de la sección de empresas con los resultados de la consulta
+            $('#empresas-container').html(data);
+        });
+    });
 
     function capturarFiltros() {
         var categoriasSeleccionadas = [];

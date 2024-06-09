@@ -19,32 +19,17 @@
             .navbar-nav {
                 flex-direction: column;
             }
+        }
 
-            .navbar-toggler {
-                order: 1;
-            }
-
-            .navbar-collapse {
-                order: 2;
-                width: 100%;
-            }
-
-            .user-icon-container {
-                order: 3;
-                display: flex;
-                justify-content: center;
-                width: 100%;
-            }
-
-            .user-icon {
-                margin-top: 10px;
-            }
+        .user-icon-container {
+            display: inline-block;
+            margin-left: 10px;
         }
 
         @media (min-width: 992px) {
             .user-icon-container {
-                position: absolute;
-                right: 10px;
+                position: relative;
+                float: right;
             }
         }
     </style>
@@ -52,7 +37,10 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Sabor y Noche</a>
+        <a class="navbar-brand" href="#">
+            <img src="/iconos/saborYNoche.png" alt="Sabor y Noche Icono" style="width: 30px; height: auto;">
+            Sabor y Noche
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -66,16 +54,18 @@
                     <a class="nav-link" th:href="@{/ocio/empresas}">Ocio</a>
                 </li>
             </ul>
-        </div>
-        <div class="user-icon-container">
-            <a class="nav-link" href="#" th:href="@{/login}">
-                <i class="bi bi-person-circle user-icon"></i>
-            </a>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{/login}">
+                        <i class="bi bi-person-circle user-icon"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+
 </body>
 </html>

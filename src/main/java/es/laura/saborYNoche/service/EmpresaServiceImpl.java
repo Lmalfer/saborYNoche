@@ -70,28 +70,28 @@ public class EmpresaServiceImpl implements EmpresaService {
         return empresaRepository.buscarEmpresas(provincia, poblacion, busqueda);
     }
 
-    @Override
-    public List<Categoria> listarTodasLasCategorias() {
-        return categoriaRepository.findAll();
-    }
+//    @Override
+//    public List<Categoria> listarTodasLasCategorias() {
+//        return categoriaRepository.findAll();
+//    }
+//
+   @Override
+   public List<TipoEstablecimiento> listarTodosLosTipos() {
+       return tipoEstablecimientoRepository.findAll();
+   }
 
-    @Override
-    public List<TipoEstablecimiento> listarTodosLosTipos() {
-        return tipoEstablecimientoRepository.findAll();
-    }
-
-    @Override
-    public List<Empresa> buscarEmpresasPorCategoriasYTipo(List<Integer> categorias, Integer tipo) {
-        if (categorias!= null && tipo!= null) {
-            return empresaRepository.buscarEmpresasPorCategoriasYTipo(categorias, tipo);
-        } else if (categorias!= null) {
-            return empresaRepository.buscarEmpresasPorCategorias(categorias);
-        } else if (tipo!= null) {
-            return empresaRepository.buscarEmpresasPorTipo(tipo);
-        } else {
-            return empresaRepository.findAll();
-        }
-    }
+//    @Override
+//    public List<Empresa> buscarEmpresasPorCategoriasYTipo(List<Integer> categorias, Integer tipo) {
+//        if (categorias!= null && tipo!= null) {
+//            return empresaRepository.buscarEmpresasPorCategoriasYTipo(categorias, tipo);
+//        } else if (categorias!= null) {
+//            return empresaRepository.buscarEmpresasPorCategorias(categorias);
+//        } else if (tipo!= null) {
+//            return empresaRepository.buscarEmpresasPorTipo(tipo);
+//        } else {
+//            return empresaRepository.findAll();
+//        }
+//    }
 
     @Override
     public Optional<Empresa> findEmpresaById(Integer id) {
@@ -160,17 +160,17 @@ public class EmpresaServiceImpl implements EmpresaService {
         return mediaVotosPorLocal;
     }
 
-    public List<Empresa> listarRestaurantes() {
-
-        return empresaRepository.findByTipoEstablecimientoIds(List.of(1));
-    }
-    public List<Empresa> listarBares() {
-
-        return empresaRepository.findByTipoEstablecimientoIds(List.of(2));
-    }
-    public List<Empresa> listarDiscotecas() {
-
-        return empresaRepository.findByTipoEstablecimientoIds(List.of(4));
-    }
+//    public List<Empresa> listarRestaurantes() {
+//
+//        return empresaRepository.findByTipoEstablecimientoIds(List.of(1));
+//    }
+//    public List<Empresa> listarBares() {
+//
+//        return empresaRepository.findByTipoEstablecimientoIds(List.of(2));
+//    }
+//    public List<Empresa> listarDiscotecas() {
+//
+//        return empresaRepository.findByTipoEstablecimientoIds(List.of(4));
+//    }
 
 }

@@ -15,9 +15,9 @@ public interface EmpresaService {
     void eliminarEmpresa(Integer id);
     Page<Empresa> listarEmpresasPorUsuario(User user, Pageable pageable);
     List<Empresa> buscarEmpresas(String provincia, String poblacion, String busqueda);
-    List<Categoria> listarTodasLasCategorias();
-    List<TipoEstablecimiento> listarTodosLosTipos();
-    List<Empresa> buscarEmpresasPorCategoriasYTipo(List<Integer> categorias, Integer tipo);
+//    List<Categoria> listarTodasLasCategorias();
+   List<TipoEstablecimiento> listarTodosLosTipos();
+//    List<Empresa> buscarEmpresasPorCategoriasYTipo(List<Integer> categorias, Integer tipo);
     Optional<Empresa> findEmpresaById(Integer id);
     void añadirPuntuacionEmpresa(Integer empresaId, String email, Integer puntuacion);
 //    List<EmpresaResponse> obtenerTodasLasEmpresasConMedias();
@@ -28,8 +28,8 @@ public interface EmpresaService {
     Map<Integer, Double> obtenerMediasVotosPorLocal(User user, Pageable pageable);
     List<Empresa> obtenerLocalesPublicadosUltimoMes(User user, Pageable pageable);
 
-    List<Empresa> listarDiscotecas();
-    List<Empresa> listarBares();
-    List<Empresa> listarRestaurantes();
+//    List<Empresa> listarDiscotecas();
+//    List<Empresa> listarBares();
+//    List<Empresa> listarRestaurantes();
 
 }

@@ -63,23 +63,23 @@ public class EmpresaController {
         return new ModelAndView("adminEmpresa")
                 .addObject("empresas", empresas);
     }
-    @GetMapping("/establecimientos/tipo/restaurantes")
-    public ModelAndView listarRestaurantes() {
-        List<Empresa> empresas = empresaService.listarRestaurantes();
-        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
-    }
-
-    @GetMapping("/establecimientos/tipo/bares")
-    public ModelAndView listarBares() {
-        List<Empresa> empresas = empresaService.listarBares();
-        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
-    }
-
-    @GetMapping("/establecimientos/tipo/discotecas")
-    public ModelAndView listarDiscotecas() {
-        List<Empresa> empresas = empresaService.listarDiscotecas();
-        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
-    }
+//    @GetMapping("/establecimientos/tipo/restaurantes")
+//    public ModelAndView listarRestaurantes() {
+//        List<Empresa> empresas = empresaService.listarRestaurantes();
+//        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
+//    }
+//
+//    @GetMapping("/establecimientos/tipo/bares")
+//    public ModelAndView listarBares() {
+//        List<Empresa> empresas = empresaService.listarBares();
+//        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
+//    }
+//
+//    @GetMapping("/establecimientos/tipo/discotecas")
+//    public ModelAndView listarDiscotecas() {
+//        List<Empresa> empresas = empresaService.listarDiscotecas();
+//        return new ModelAndView("listadoTipoEstablecimientos", "empresas", empresas);
+//    }
     // Mostrar formulario de nueva empresa
     @GetMapping("/nuevaEmpresa")
     public ModelAndView mostrarFormularioDeNuevaEmpresa() {

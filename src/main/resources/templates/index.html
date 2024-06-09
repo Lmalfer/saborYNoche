@@ -9,45 +9,76 @@
           crossorigin="anonymous">
 
     <style>
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/images/copas.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
         .jumbotron {
-            background-color: peachpuff;
+            background-color: darkgoldenrod;
             background-size: cover;
             color: white;
             text-shadow: 2px 2px 4px #000000;
         }
+
         .container {
             margin-bottom: 4%;
         }
-        body {
-            background-color: #f8f9fa;
+
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
+
         .navbar-nav .nav-link {
             color: #ffffff !important;
             transition: all 0.3s ease;
         }
+
         .navbar-nav .nav-link:hover {
             color: #17a2b8 !important;
         }
+
         .card {
             margin-bottom: 20px;
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            height: 100%;
+        }
+        .card-img-top {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover; /* Hace que la imagen se ajuste al tamaño del contenedor sin distorsionarse */
         }
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
         }
+
         .card-title {
             margin-bottom: 0;
         }
+        .btn{
+            color:#ffffff !important;
+        }
+
     </style>
 </head>
 
 <body>
 <div th:if="${not #authorization.expression('isAuthenticated()')}" th:include="fragments/header-non-registered"></div>
 <div th:if="${#authorization.expression('isAuthenticated()')}" th:include="fragments/header-registered"></div>
+
+<div class="overlay"></div>
 
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
@@ -58,7 +89,12 @@
 
 <div class="container">
     <div class="row">
-        <h2 class="text-center">¿Qué te apetece hoy?</h2>
+        <h2 class="text-center text-white mt-5">¿Qué te apetece hoy?</h2>
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-12 text-center">
+            <a href="/ocio/empresas" class="btn btn-lg">Ir a la página de Ocio</a>
+        </div>
     </div>
     <div class="row mt-4">
         <div class="col-md-4">

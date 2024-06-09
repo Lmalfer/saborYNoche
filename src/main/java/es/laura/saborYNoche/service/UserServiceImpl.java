@@ -131,7 +131,9 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllEmpresarios() {
         return userRepository.findByRole(RoleEnum.EMPRESARIO);
     }
-
+    public User findEmpresarioById(Long empresarioId) {
+        return userRepository.findById(empresarioId).orElse(null);
+    }
 }
 
 
