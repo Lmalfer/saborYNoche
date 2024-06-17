@@ -6,6 +6,7 @@ import es.laura.saborYNoche.repository.*;
 import es.laura.saborYNoche.service.EmpresaService;
 import es.laura.saborYNoche.service.PromocionService;
 import es.laura.saborYNoche.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -145,7 +146,7 @@ public class EmpresaController {
     }
 
     @PostMapping("/{id}/editarEmpresa")
-    public ModelAndView actualizarEmpresa(@PathVariable Integer id, @Validated Empresa empresa, BindingResult bindingResult) {
+    public ModelAndView actualizarEmpresa(@PathVariable Integer id, @Valid Empresa empresa, BindingResult bindingResult) {
         MultipartFile urlImagen = empresa.getUrlImagen();
         if (bindingResult.hasErrors()) {
             List<Categoria> categorias = categoriaRepositorio.findAll(Sort.by("nombre"));
@@ -173,7 +174,7 @@ public class EmpresaController {
         empresaDB.setCodigoPostal(empresa.getCodigoPostal());
 
         // Verificar si se proporciona una nueva imagen
-        if (!urlImagen.isEmpty()) {
+        if (urlImagen != null && !urlImagen.isEmpty()) {
             try {
                 byte[] imagenBytes = urlImagen.getBytes();
                 String base64Image = Base64.getEncoder().encodeToString(imagenBytes);

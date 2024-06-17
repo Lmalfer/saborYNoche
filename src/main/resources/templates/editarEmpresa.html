@@ -78,7 +78,7 @@
         <div class="card-body">
             <h1 class="text-center mb-4">Editar Empresa</h1>
             <span class="close-button" onclick="redirectToPreviousPage()">&times;</span>
-            <form th:action="@{/adminEmpresa/nuevaEmpresa}" th:object="${empresa}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/adminEmpresa/{id}/editarEmpresa(id=${empresa.id})}" th:object="${empresa}" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
                     <input type="text" class="form-control" id="nombre" th:field="*{nombre}">
